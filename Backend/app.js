@@ -3,16 +3,16 @@ import mongoose from "mongoose"
 import dotenv from "dotenv"
 import path from "path"
 import cors from "cors"
-// import userRoutes from "./Routes/UserRoutes"
+import userRoutes from "./Routes/UserRoutes.js"
 dotenv.config({path: path.resolve("../.env")})
 const app = express();
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.set("port", process.env.PORT || 3000); 
+app.set("port", process.env.PORT || 3000);
 
-// app.use("/api/v1/users", userRoutes)
+app.use("/api/v1/users", userRoutes)
 
 const startServer = async ()=>{
     try{
