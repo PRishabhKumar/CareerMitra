@@ -1,8 +1,9 @@
 import crypto from "crypto"
 import httpStatus from "http-status"
-import brcypt, {hash} from "bcrypt"
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 import {UserModel} from "../Models/userModel.js"
-
+import Resume from "../Models/resumeModel.js"
 // function to register user
 
 const register = async (req, res)=>{
@@ -14,7 +15,7 @@ const register = async (req, res)=>{
             res.status(httpStatus.CONFLICT).json({message: "A user with this username already exists"})
         }
         else{
-            const hashedPassword = await brcypt.hash(password, 10)
+            const hashedPassword = await bcrypt.hash(password, 10)
             let newUser = new UserModel({
                 username,
                 password: hashedPassword,
@@ -36,12 +37,16 @@ const login = async(req, res)=>{
     try{
         let user = await UserModel.findOne({username: username})
         if(user){
-            if(brcypt.compare(password, user.password)){
-                res.status(200).json({message: "User authenticated successfully..."})
+            if(await bcrypt.compare(password, user.password)){
+                const token = jwt.sign({userID: user._id}, process.env.JWT_SECRET, {expiresIn: "1d"})
+                res.status(200).json({message: "User authenticated successfully...",
+                    token,
+                    username: user.username
+                })
                 console.log('Authentication successfull....')
             }
             else{
-                rmSync.status(401).json({message: "Credentials dont match, plesae try again.."})
+                res.status(401).json({message: "Credentials dont match, plesae try again.."})
                 console.log("No match")
             }
         }
@@ -57,4 +62,42 @@ const login = async(req, res)=>{
     }
 }
 
-export {register, login}
+const handleResumeUpload = async (req, res)=>{
+    try{
+        console.log("=== UPLOAD START ===")
+        console.log("User ID:", req.userID)
+        console.log("File object:", req.file)
+        console.log("ENV - Cloud Name:", process.env.CLOUDINARY_CLOUD_NAME)
+        console.log("ENV - API Key exists:", !!process.env.CLOUDINARY_API_KEY)
+        
+        if(!req.file){
+            return res.status(400).json({message: "No file was uploaded"})
+        }
+        
+        const fileUpload = await Resume.create({
+            userID: req.userID,
+            fileURL: req.file.path,
+            fileID: req.file.filename,
+            uploadTime: new Date()            
+        })
+        
+        console.log("=== UPLOAD SUCCESS ===")
+        console.log("Saved to DB:", fileUpload)
+        
+        res.status(201).json({
+            message: "Resume uploaded successfully...",
+            url: req.file.path,
+            data: req.file.filename
+        })
+    }   
+    catch(error){
+        console.log("=== UPLOAD ERROR ===")
+        console.log("Error:", error.message)
+        console.log("Stack:", error.stack)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            message: "There was some internal server error in uploading the resume"
+        })
+    } 
+}
+
+export {register, login, handleResumeUpload}

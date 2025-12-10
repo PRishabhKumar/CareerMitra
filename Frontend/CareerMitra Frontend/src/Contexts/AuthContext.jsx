@@ -21,7 +21,10 @@ export const AuthProvider = ({children}) =>{
                 emailID
             })
             if(request.status === httpStatus.CREATED){
-                return request.data.message || "User registered successfully"
+                setTimeout(()=>{
+                    router("/home")
+                }, 2000)
+                return request.data.message || "User registered successfully"                
             }            
         }
         catch(error){
@@ -39,6 +42,9 @@ export const AuthProvider = ({children}) =>{
             if(request.status === httpStatus.OK){
                 localStorage.setItem("token", request.data.token) // add the token and username to the local storage
                 localStorage.setItem("userame", request.data.username) 
+                setTimeout(()=>{
+                    router("/home")
+                }, 2000)
             }
             return request.data.message || "User authenticated usccessfully"
         }

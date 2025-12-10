@@ -1,10 +1,10 @@
-import express from "express"
-import mongoose from "mongoose"
 import dotenv from "dotenv"
 import path from "path"
+dotenv.config({path: path.resolve("../.env")})
+import express from "express"
+import mongoose from "mongoose"
 import cors from "cors"
 import userRoutes from "./Routes/UserRoutes.js"
-dotenv.config({path: path.resolve("../.env")})
 const app = express();
 app.use(cors())
 app.use(express.json())
