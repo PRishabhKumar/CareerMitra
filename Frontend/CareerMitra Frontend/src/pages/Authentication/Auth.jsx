@@ -113,11 +113,7 @@ function Auth() {
                             <h2 className="form-title">
                                 {formState === 0 ? "Sign In" : "Create Account"}
                             </h2>
-                            <p className="form-subtitle">
-                                {formState === 0 
-                                    ? "Enter your credentials to access your account" 
-                                    : "Join us today and start your career journey"}
-                            </p>
+                            
                         </div>
 
                         {/* Alert Messages */}
@@ -227,6 +223,7 @@ function Auth() {
                                         required
                                     />
                                     <button
+                                        type="button"
                                         className="password-toggle"
                                         onClick={() => setShowPassword(!showPassword)}
                                     >
@@ -247,6 +244,7 @@ function Auth() {
 
                             {/* Submit Button */}
                             <button 
+                                type="button"
                                 onClick={handleSubmit}
                                 className="submit-btn"
                             >
@@ -260,7 +258,7 @@ function Auth() {
                             <div className="form-footer">
                                 <p>
                                     {formState === 0 ? "Don't have an account?" : "Already have an account?"}
-                                    <button className="toggle-btn" onClick={toggleForm}>
+                                    <button type="button" className="toggle-btn" onClick={toggleForm}>
                                         {formState === 0 ? "Sign Up" : "Sign In"}
                                     </button>
                                 </p>
