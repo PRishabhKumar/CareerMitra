@@ -300,14 +300,14 @@ body {
   margin-top: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle border for definition */
   transition: all 0.5s ease-in-out;
-  animation: authentiationMessageFadeIn 1s forwards
+  animation: authentiationMessageFadeIn 1s forwards;
 }
 
-@keyframes authentiationMessageFadeIn{
-  0%{
-      opacity: 0;
+@keyframes authentiationMessageFadeIn {
+  0% {
+    opacity: 0;
   }
-  100%{
+  100% {
     opacity: 1;
   }
 }
@@ -353,7 +353,7 @@ body {
 
 .input-icon {
   position: absolute;
-  right: 0;
+  left: 12px;
   bottom: 12px;
   width: 20px;
   height: 20px;
@@ -364,8 +364,7 @@ body {
 
 .form-input {
   width: 100%;
-  padding: 10px 0;
-  padding-right: 30px;
+  padding: 10px 40px; /* Space for both left icon and right toggle */
   background: transparent;
   border: none;
   border-bottom: 1px solid #334155;
@@ -386,7 +385,7 @@ body {
   border-color: #d4af37;
   box-shadow: none;
   background: transparent;
-  padding-left: 10px;
+  /* padding-left is already set for the icon, so we don't change it on focus */
 }
 
 .form-input:focus + .input-icon {
@@ -395,7 +394,7 @@ body {
 
 .password-toggle {
   position: absolute;
-  right: 0;
+  right: 12px;
   bottom: 10px;
   padding: 0;
   background: none;

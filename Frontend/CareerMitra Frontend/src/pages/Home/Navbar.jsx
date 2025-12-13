@@ -21,18 +21,20 @@ function Navbar() {
       router("/auth"); // redirect to the authentication route
     }
   };
-  const handleGetStarted = ()=>{
-    router("/auth") // redirect to the authentication page when clcked on get started
-  }
+  const handleGetStarted = () => {
+    router("/auth"); // redirect to the authentication page when clcked on get started
+  };
   return (
     <nav className="navbar">
       {logoutMessage && <div className="messageContainer">{logoutMessage}</div>}
       <div className="navbar-container">
         {/* Logo Section */}
         <div className="navbar-logo">
-          <span className="logo-text">
-            Career<span className="logo-highlight">Mitra</span>
-          </span>
+          <a href="/">
+            <span className="logo-text">
+              Career<span className="logo-highlight">Mitra</span>
+            </span>
+          </a>
           <div className="logo-glow"></div>
         </div>
 
@@ -57,7 +59,9 @@ function Navbar() {
           >
             {localStorage.getItem("token") ? "Log out" : "Log In"}
           </button>
-          <button onClick = {handleGetStarted} className="nav-btn-primary">Get Started</button>
+          <button onClick={handleGetStarted} className="nav-btn-primary">
+            Get Started
+          </button>
         </div>
       </div>
     </nav>
