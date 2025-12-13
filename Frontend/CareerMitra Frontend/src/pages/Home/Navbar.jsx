@@ -40,9 +40,12 @@ function Navbar() {
 
         {/* Navigation Links */}
         <div className="navbar-links">
-          <a href="#home" className="nav-item active">
-            Home
-          </a>
+          {/* Display the home page nav link only if the user is logged in */}
+          {localStorage.getItem("token") && (
+            <a href="/home" className="nav-item active">
+              Home
+            </a>
+          )}
           <a href="#features" className="nav-item">
             Features
           </a>
