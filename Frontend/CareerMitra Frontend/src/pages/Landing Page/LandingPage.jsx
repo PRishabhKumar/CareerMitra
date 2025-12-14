@@ -23,7 +23,7 @@ function LandingPage() {
               artificial intelligence.
             </p>
             <div className="hero-cta-group">
-              <Link to="/auth" className="btn-primary-gold">
+              <Link to={localStorage.getItem("token") ? "/home" : "/auth"} className="btn-primary-gold">
                 Analyze My Resume
                 <svg
                   viewBox="0 0 24 24"

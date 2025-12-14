@@ -159,10 +159,10 @@ const handleResumeUpload = async (req, res) => {
 
     const pdfBuffer = req.file.buffer;
 
-    // 1. Process PDF (Extract Text)
+    // First extract the text from PDF
     const extractedText = await processPDF(pdfBuffer);
 
-    // 2. Upload to Cloudinary manually
+    // manual upload to cloudinary after processing
     const uploadResult = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
@@ -179,12 +179,13 @@ const handleResumeUpload = async (req, res) => {
       stream.end(pdfBuffer);
     });
 
-    // 3. Save to DB
+    // finally save the obtained URL in the DB
     const savedResume = await Resume.create({
       userID: req.userID,
       fileURL: uploadResult.secure_url,
       fileID: uploadResult.public_id,
       extractedText,
+      extractionStatus: "SUCCESS",
       uploadTime: new Date(),
     });
 
