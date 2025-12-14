@@ -349,6 +349,192 @@ html {
   color: var(--error-red);
 }
 
+/* JD Section Styles */
+.hasJDContainer {
+  width: 100%;
+  max-width: 550px;
+  margin-top: 3rem;
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: var(--glass-border);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  animation: fadeInUp 1s ease-out 0.9s backwards;
+}
+
+.jd-question {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.jd-button-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.jd-option-button {
+  flex: 1;
+  max-width: 150px;
+  padding: 0.9rem 1.5rem;
+  background: rgba(30, 41, 59, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.jd-option-button svg {
+  transition: transform 0.3s ease;
+}
+
+.jd-option-button:hover {
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+  background: rgba(30, 41, 59, 0.8);
+}
+
+.jd-option-button:hover svg {
+  transform: scale(1.1);
+}
+
+.jd-option-button.active {
+  background: linear-gradient(135deg, var(--accent-primary), #b8860b);
+  border-color: var(--accent-primary);
+  color: #000;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+}
+
+.jd-option-button.active:hover {
+  background: linear-gradient(135deg, var(--accent-primary), #b8860b);
+  filter: brightness(1.05);
+}
+
+.jd-option-button.active svg {
+  animation: checkPulse 0.5s ease;
+}
+
+@keyframes checkPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* JD Input Section */
+.jd-input-section {
+  width: 100%;
+  max-width: 550px;
+  margin-top: 2rem;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.jd-input-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
+
+.jd-content-container {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: var(--glass-border);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.jd-textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: "Outfit", sans-serif;
+  line-height: 1.6;
+  resize: vertical;
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.jd-textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.jd-textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  background: rgba(15, 23, 42, 0.8);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.jd-submit-button {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--accent-primary), #b8860b);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.jd-submit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+  filter: brightness(1.1);
+}
+
+.jd-submit-button svg {
+  transition: transform 0.3s ease;
+}
+
+.jd-submit-button:hover svg {
+  transform: rotate(360deg);
+}
+
 /* Animations */
 @keyframes fadeInDown {
   from {

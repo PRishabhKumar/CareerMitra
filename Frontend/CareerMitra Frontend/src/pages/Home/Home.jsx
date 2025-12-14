@@ -9,6 +9,7 @@ function Home() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [hasJD, setHasJD] = useState(false); // this determined if the user has a JD or not
 
   const handleFileUpload = (e) => {
     const selectedFile = e.target.files[0];
@@ -184,6 +185,88 @@ function Home() {
                 </div>
               )}
             </div>
+            <div className="hasJDContainer">
+              <h3 className="jd-question">
+                Do you have a Job Description against which you want to
+                calculate the ATS Score of your resume?
+              </h3>
+              <div className="jd-button-group">
+                <button
+                  className={`jd-option-button ${
+                    hasJD === true ? "active" : ""
+                  }`}
+                  onClick={() => setHasJD(true)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Yes
+                </button>
+                <button
+                  className={`jd-option-button ${
+                    hasJD === false ? "active" : ""
+                  }`}
+                  onClick={() => setHasJD(false)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                  No
+                </button>
+              </div>
+            </div>
+            {hasJD && (
+              <div className="jd-input-section">
+                <h3 className="jd-input-title">
+                  Paste your Job Description here:
+                </h3>
+                <div className="jd-content-container">
+                  <textarea
+                    className="jd-textarea"
+                    placeholder="Paste the job description here..."
+                    rows="10"
+                  ></textarea>
+                  <button className="jd-submit-button">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Submit JD
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="side-content">

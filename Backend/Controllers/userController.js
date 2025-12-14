@@ -15,6 +15,13 @@ import { UserModel } from "../Models/userModel.js";
 import Resume from "../Models/resumeModel.js";
 import cloudinary from "../config/cloudinaryConfig.js";
 
+// Including the skills dictionary 
+
+const skillsDictionaryPath = path.join(process.cwd(), "Utilities", "skills.json")
+const skillsDictionary = JSON.parse(fs.readFileSync(skillsDictionaryPath, "utf8"))
+
+console.log("Skills dictionary imported successfully....", skillsDictionary)
+
 const register = async (req, res) => {
   try {
     const { username, password, phoneNumber, emailID } = req.body;
@@ -70,6 +77,8 @@ const login = async (req, res) => {
       .json({ message: "Login failed" });
   }
 };
+
+// ========================================== PDF Processing functions ==========================================
 
 export async function isTextPDF(pdfBuffer) {
   try {
@@ -151,6 +160,148 @@ export async function processPDF(pdfBuffer) {
     : extractTextFromOCR(pdfBuffer);
 }
 
+// ========================================== ATS Score calculation function =======================================
+
+// Step 1 --> Normalize the text
+
+function normalizeText(text){
+  // convert the text to lower case, replace every character other than alphabets and numbers and whitespaces to whitespace and also convert all multiple whitespaces and tabs etc to single whitespaces
+  return text.toLowerCase().replace(/[^a-z0-9\s+]/g, " ").replace(/\s+/g, " ").trim() 
+}
+
+// Step 2 --> Extract skills from resume
+
+function extractSkills(resumeText, skillsDictionary){
+  const foundSkills = []
+  for(const category in skillsDictionary){
+    foundSkills[category] = []
+    for(const skill of skillsDictionary[category]){
+      const normalizedSkill = skill.toLowerCase(skill);
+      if(resumeText.includes(normalizedSkill)){
+        foundSkills[category].push(skill);
+      }
+    }      
+  }
+  return foundSkills;
+}
+
+// Step 3 --> Resume structure analysis
+
+function analyzeResumeStructure(text){
+  const sections = {
+    experience: /experience|work experience/.test(text),
+    education: /education/.test(text),
+    skils: /skills/.test(text),
+    projects: /projects/.test(text)
+  };
+  const sectionScore = Object.values(sections).filter(Boolean).length/Object.keys(sections).length
+  return sectionScore;
+}
+
+// Step 4 --> Action Verb Analysis
+
+function analyzeActionVerbs(text){
+  let count = 0
+  let ACTION_VERBS = ["developed", "built", "designed", "implemented", "led", "optimized", "created", "managed"];
+  for(const verb of ACTION_VERBS){
+    if(text.includes(verb)){
+      count++;
+    }
+  }
+  return Math.min(count/10, 1); // this caps the value at 1
+}
+
+// Step 5 --> keyword density score
+
+function calculateKeyWordDensityScore(text){
+  const words = text.split(" ");
+  const uniqueWords = new Set(words); // this automatically removes all duplicate words
+  return Math.min(uniqueWords.size/words.length, 1);
+}
+
+// Step 6 --> Calulate ATS Score without JD
+
+function ATSWithoutJD(text){
+  const normalizedText = normalizeText(normalizeText);
+  const skills = extractSkills(normalizedText)
+  const structureScore = analyzeResumeStructure(normalizeText) 
+  const actionVerbScore = analyzeActionVerbs(normalizedText)
+  const keywordScore = calculateKeyWordDensityScore(normalizeText)
+
+  const skillScore = Math.min(skills.length/10, 1)
+  const ATS_Score = skillScore*0.4 + structureScore*0.25 + actionVerbScore*0.2 + keywordScore*0.15
+  return {
+    ATS_Score: ATS_Score,
+    breakdown: {
+      skillScore,
+      structureScore,
+      actionVerbScore,
+      keywordScore
+    }
+  }
+}
+
+// Step 7 --> ATS with JD
+
+// (I) Extracting keywords from JD
+
+function extractJDKeyword(jd){
+  return Array.from(
+    new Set(
+      normalizeText(jd).split(jd).filter((w)=>{
+        w.length>3
+      })
+    )
+  )
+}
+
+// (II) Match resume with JD
+
+function matchJDAndResume(resumeText, jdKeywords){
+  let matchCount = 0
+  for(const keyword of jdKeywords){
+    if(resumeText.includes(keyword)){
+      count++;
+    }
+  }
+  return matchCount/jdKeywords.length;
+}
+
+// (III) Calclate ATS Score
+
+function ATSWithJD(extractedText, jd){
+  const normalizedText = normalizeText(extractedText)
+  const jdKeywords = extractJDKeyword(jd)
+
+  const JDMatchScore = matchJDAndResume(normalizedText, jd)
+  const structureScore = analyzeResumeStructure(normalizedText)
+  const actionVerbScore = analyzeActionVerbs(normalizedText)
+
+  const ATS_Score = JDMatchScore*0.5 + structureScore*0.25 + actionVerbScore*0.25;
+
+  return {
+    ATS_Score: ATS_Score,
+    breakdown: {
+      JDMatchScore,
+      structureScore,
+      actionVerbScore
+    }
+  }
+}
+
+// Master function for calculating ATS Score
+
+function calcualteATS_Score({extractedText, jd = null}){
+  if(jd){
+    return ATSWithJD(extractedText, jd)
+  }
+  else{
+    return ATSWithoutJD(extractedText)
+  }
+}
+
+// ========================================== Master function to handle PDF uploads ================================
+
 const handleResumeUpload = async (req, res) => {
   try {
     if (!req.file) {
@@ -161,6 +312,13 @@ const handleResumeUpload = async (req, res) => {
 
     // First extract the text from PDF
     const extractedText = await processPDF(pdfBuffer);
+
+    // calculating the ATS Score 
+
+    const ATS_Score = calcualteATS_Score({
+      extractedText,
+      jd: req.body.js || null
+    })
 
     // manual upload to cloudinary after processing
     const uploadResult = await new Promise((resolve, reject) => {
@@ -186,6 +344,7 @@ const handleResumeUpload = async (req, res) => {
       fileID: uploadResult.public_id,
       extractedText,
       extractionStatus: "SUCCESS",
+      atsScore: ATS_Score,
       uploadTime: new Date(),
     });
 

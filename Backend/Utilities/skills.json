@@ -1,0 +1,8 @@
+{
+  "programming_languages": ["c", "c++", "java", "python", "javascript", "typescript", "go", "ruby", "rust", "php"],
+  "web_technologies": ["html5", "css3", "javascript", "typescript", "sass", "less", "jquery"],
+  "web_frameworks": ["react", "angular", "vue", "nodejs", "expressjs", "flask", "django", "nextjs", "nuxtjs", "spring", "laravel"],
+  "databases": ["mysql", "postgresql", "mongodb", "sqlite", "redis", "oracle", "mariadb"],
+  "version_control_and_cloud_tools": ["git", "github", "gitlab", "bitbucket", "aws", "docker", "heroku", "azure", "gcp"],
+  "ai_tools": ["cursor", "github_copilot", "warp", "antigravity", "chatgpt", "bard"]
+}
