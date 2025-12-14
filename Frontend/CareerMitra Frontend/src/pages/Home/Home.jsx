@@ -1,8 +1,10 @@
 import { useState } from "react";
 import "./Styles/HomeStyle.css";
 import axios from "axios";
+import {useNavigate} from "react-router-dom"
 import Navbar from "./Navbar.jsx";
 function Home() {
+  const router = useNavigate()
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -62,9 +64,13 @@ function Home() {
           },
         }
       );
+      const {resumeID} = res.data           
       console.log(res.data);
-      setMessage("Resume uploaded successfully! Analyzing...");
+      setMessage("Resume uploaded successfully! Redirecting to results page...");
       setError("");
+      setTimeout(()=>{
+        router("/results", {state: {resumeID}}) 
+      }, 2000)
     } catch (error) {
       console.error("Upload error:", error);
       setError("Failed to upload. Please try again.");
