@@ -12,6 +12,14 @@ function Results() {
   const [extractionStatus, setExtractionStatus] = useState("");
   const [extractionError, setExtractionError] = useState("");
   const [ATS_Score, setATS_Score] = useState(0);
+  const [jd, setJd] = useState("");
+  const [breakdown, setBreakdown] = useState({
+    skillScore: "",
+    structureScore: "",
+    actionVerbScore: "",
+    keywordScore: "",
+    JDMatchScore: jd ? "" : null
+  })
   const [errorMessage, setErrorMessage] = useState("");  
 
   // Animation state
@@ -37,8 +45,10 @@ function Results() {
       setPdfType(data.pdfType);
       setExtractedText(data.extractedText);
       setExtractionStatus(data.extractionStatus);      
-      setATS_Score(Number((data.atsScore*100).toFixed(2)))      
+      setATS_Score(Number((data.atsScore*100).toFixed(2)))   
+      setJd(data.jd)   
       setShowContent(true);
+      setBreakdown(data.atsBreakdown)
     } catch (error) {
       console.log("This error occured in fetching the results : ", error);
       setErrorMessage("Failed to fetch results. Please try again.");
@@ -248,6 +258,34 @@ function Results() {
             <div className="custom-scrollbar text-content">{extractedText}</div>
           </div>
         )}
+
+        {
+          jd && (
+            <>
+            <h3>Attached Job Description</h3>
+              <div className="jdContainer">
+                {jd}
+              </div>
+            </>
+          )
+        }
+        <h3>ATS Score breakdown...</h3>
+        {
+          breakdown && 
+          Object.entries(breakdown).map(([key, value])=>{
+            if(value != null && value != undefined){
+              return(
+                <>                  
+                  <div className="breakdownComponentContainer">
+                    <div>{key}</div>
+                    <div>{Number((value*100).toFixed(2))}</div>
+                  </div>
+                </>
+              )
+            }
+          })
+        }
+
       </div>
     </div>
   );

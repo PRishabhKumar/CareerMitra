@@ -313,8 +313,8 @@ function ATSWithJD(extractedText, jd) {
 }
 
 // Master ATS function
-function calculateATS_Score({ extractedText, jd = null }) {
-  return jd ? ATSWithJD(extractedText, jd) : ATSWithoutJD(extractedText);
+function calculateATS_Score({ extractedText, jd = "" }) {
+  return jd != "" ? ATSWithJD(extractedText, jd) : ATSWithoutJD(extractedText); // consider empty string as no JD
 }
 
 // ========================================== RESUME UPLOAD ==========================================
@@ -326,6 +326,7 @@ const handleResumeUpload = async (req, res) => {
     }
 
     const pdfBuffer = req.file.buffer;
+    const jd = req.body.jd;
 
     // Detect PDF type
     const isText = await isTextPDF(pdfBuffer);
@@ -335,7 +336,7 @@ const handleResumeUpload = async (req, res) => {
 
     const ATS_Score = calculateATS_Score({
       extractedText,
-      jd: req.body.jd || null,
+      jd: req.body.jd || "", //  if JD is not available send empty string but not null
     });
 
     const uploadResult = await new Promise((resolve, reject) => {
@@ -363,6 +364,7 @@ const handleResumeUpload = async (req, res) => {
       extractionStatus: "SUCCESS",
       atsScore: ATS_Score.ATS_Score,
       atsBreakdown: ATS_Score.breakdown,
+      jd: jd ? jd : "",
       uploadTime: new Date(),
     });
 
@@ -402,6 +404,9 @@ const fetchResumeResults = async (req, res) => {
       extractedText: doc.extractedText,
       extractionStatus: doc.extractionStatus,
       atsScore: doc.atsScore,
+      atsBreakdown: doc.atsBreakdown,
+      jd: doc.jd,
+      breakdown: doc.breakdown,
     });
   } catch (error) {
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json({

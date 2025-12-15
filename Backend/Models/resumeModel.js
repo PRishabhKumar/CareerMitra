@@ -54,7 +54,7 @@ const resumeSchema = new mongoose.Schema(
     atsScore: {
       type: Number,
       min: 0,
-      max: 1,          
+      max: 1,
       required: true,
     },
 
@@ -66,6 +66,10 @@ const resumeSchema = new mongoose.Schema(
     uploadTime: {
       type: Date,
       default: Date.now,
+    },
+
+    jd: {
+      type: String,
     },
   },
   {
