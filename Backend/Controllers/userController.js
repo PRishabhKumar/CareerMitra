@@ -15,12 +15,20 @@ import { UserModel } from "../Models/userModel.js";
 import Resume from "../Models/resumeModel.js";
 import cloudinary from "../config/cloudinaryConfig.js";
 
-// Including the skills dictionary 
+// ========================================== Skills Dictionary ==========================================
 
-const skillsDictionaryPath = path.join(process.cwd(), "Utilities", "skills.json")
-const skillsDictionary = JSON.parse(fs.readFileSync(skillsDictionaryPath, "utf8"))
+const skillsDictionaryPath = path.join(
+  process.cwd(),
+  "Utilities",
+  "skills.json"
+);
+const skillsDictionary = JSON.parse(
+  fs.readFileSync(skillsDictionaryPath, "utf8")
+);
 
-console.log("Skills dictionary imported successfully....", skillsDictionary)
+console.log("Skills dictionary imported successfully");
+
+// ========================================== AUTH CONTROLLERS ==========================================
 
 const register = async (req, res) => {
   try {
@@ -34,6 +42,7 @@ const register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = await UserModel.create({
       username,
       password: hashedPassword,
@@ -60,8 +69,8 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await UserModel.findOne({ username });
 
+    const user = await UserModel.findOne({ username });
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -78,7 +87,7 @@ const login = async (req, res) => {
   }
 };
 
-// ========================================== PDF Processing functions ==========================================
+// ========================================== PDF PROCESSING ==========================================
 
 export async function isTextPDF(pdfBuffer) {
   try {
@@ -102,7 +111,7 @@ export async function isTextPDF(pdfBuffer) {
 
     return textScore >= imageScore && meaningfulText > 300;
   } catch (error) {
-    console.log("PDF type detection failed:", error.message);
+    console.error("PDF type detection failed:", error.message);
     return false;
   }
 }
@@ -154,153 +163,161 @@ export async function extractTextFromOCR(pdfBuffer) {
 }
 
 export async function processPDF(pdfBuffer) {
-  const textBased = await isTextPDF(pdfBuffer);
-  return textBased
+  return (await isTextPDF(pdfBuffer))
     ? extractTextFromPDF(pdfBuffer)
     : extractTextFromOCR(pdfBuffer);
 }
 
-// ========================================== ATS Score calculation function =======================================
+// ========================================== ATS LOGIC ==========================================
 
-// Step 1 --> Normalize the text
-
-function normalizeText(text){
-  // convert the text to lower case, replace every character other than alphabets and numbers and whitespaces to whitespace and also convert all multiple whitespaces and tabs etc to single whitespaces
-  return text.toLowerCase().replace(/[^a-z0-9\s+]/g, " ").replace(/\s+/g, " ").trim() 
+// Normalize text
+function normalizeText(text = "") {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
-// Step 2 --> Extract skills from resume
+// Extract skills
+function extractSkills(resumeText, skillsDictionary) {
+  const foundSkills = {};
 
-function extractSkills(resumeText, skillsDictionary){
-  const foundSkills = []
-  for(const category in skillsDictionary){
-    foundSkills[category] = []
-    for(const skill of skillsDictionary[category]){
-      const normalizedSkill = skill.toLowerCase(skill);
-      if(resumeText.includes(normalizedSkill)){
+  for (const category in skillsDictionary) {
+    foundSkills[category] = [];
+
+    for (const skill of skillsDictionary[category]) {
+      const normalizedSkill = skill.toLowerCase();
+      if (resumeText.includes(normalizedSkill)) {
         foundSkills[category].push(skill);
       }
-    }      
+    }
   }
   return foundSkills;
 }
 
-// Step 3 --> Resume structure analysis
-
-function analyzeResumeStructure(text){
+// Resume structure
+function analyzeResumeStructure(text) {
   const sections = {
     experience: /experience|work experience/.test(text),
     education: /education/.test(text),
-    skils: /skills/.test(text),
-    projects: /projects/.test(text)
+    skills: /skills/.test(text),
+    projects: /projects/.test(text),
   };
-  const sectionScore = Object.values(sections).filter(Boolean).length/Object.keys(sections).length
-  return sectionScore;
+
+  return (
+    Object.values(sections).filter(Boolean).length /
+    Object.keys(sections).length
+  );
 }
 
-// Step 4 --> Action Verb Analysis
+// Action verbs
+function analyzeActionVerbs(text) {
+  const ACTION_VERBS = [
+    "developed",
+    "built",
+    "designed",
+    "implemented",
+    "led",
+    "optimized",
+    "created",
+    "managed",
+  ];
 
-function analyzeActionVerbs(text){
-  let count = 0
-  let ACTION_VERBS = ["developed", "built", "designed", "implemented", "led", "optimized", "created", "managed"];
-  for(const verb of ACTION_VERBS){
-    if(text.includes(verb)){
-      count++;
-    }
+  let count = 0;
+  for (const verb of ACTION_VERBS) {
+    if (text.includes(verb)) count++;
   }
-  return Math.min(count/10, 1); // this caps the value at 1
+
+  return Math.min(count / 10, 1);
 }
 
-// Step 5 --> keyword density score
-
-function calculateKeyWordDensityScore(text){
+// Keyword density
+function calculateKeyWordDensityScore(text) {
   const words = text.split(" ");
-  const uniqueWords = new Set(words); // this automatically removes all duplicate words
-  return Math.min(uniqueWords.size/words.length, 1);
+  const uniqueWords = new Set(words);
+  return Math.min(uniqueWords.size / words.length, 1);
 }
 
-// Step 6 --> Calulate ATS Score without JD
+// ATS WITHOUT JD
+function ATSWithoutJD(text) {
+  const normalizedText = normalizeText(text);
 
-function ATSWithoutJD(text){
-  const normalizedText = normalizeText(normalizeText);
-  const skills = extractSkills(normalizedText)
-  const structureScore = analyzeResumeStructure(normalizeText) 
-  const actionVerbScore = analyzeActionVerbs(normalizedText)
-  const keywordScore = calculateKeyWordDensityScore(normalizeText)
+  const skills = extractSkills(normalizedText, skillsDictionary);
+  const totalSkills = Object.values(skills).flat().length;
 
-  const skillScore = Math.min(skills.length/10, 1)
-  const ATS_Score = skillScore*0.4 + structureScore*0.25 + actionVerbScore*0.2 + keywordScore*0.15
+  const structureScore = analyzeResumeStructure(normalizedText);
+  const actionVerbScore = analyzeActionVerbs(normalizedText);
+  const keywordScore = calculateKeyWordDensityScore(normalizedText);
+  const skillScore = Math.min(totalSkills / 10, 1);
+
+  const ATS_Score =
+    skillScore * 0.4 +
+    structureScore * 0.25 +
+    actionVerbScore * 0.2 +
+    keywordScore * 0.15;
+
   return {
-    ATS_Score: ATS_Score,
+    ATS_Score,
     breakdown: {
       skillScore,
       structureScore,
       actionVerbScore,
-      keywordScore
-    }
-  }
+      keywordScore,
+    },
+  };
 }
 
-// Step 7 --> ATS with JD
+// ========================================== ATS WITH JD ==========================================
 
-// (I) Extracting keywords from JD
-
-function extractJDKeyword(jd){
+function extractJDKeywords(jd) {
   return Array.from(
     new Set(
-      normalizeText(jd).split(jd).filter((w)=>{
-        w.length>3
-      })
+      normalizeText(jd)
+        .split(" ")
+        .filter((w) => w.length > 3)
     )
-  )
+  );
 }
 
-// (II) Match resume with JD
+function matchJDAndResume(resumeText, jdKeywords) {
+  let matchCount = 0;
 
-function matchJDAndResume(resumeText, jdKeywords){
-  let matchCount = 0
-  for(const keyword of jdKeywords){
-    if(resumeText.includes(keyword)){
-      count++;
+  for (const keyword of jdKeywords) {
+    if (resumeText.includes(keyword)) {
+      matchCount++;
     }
   }
-  return matchCount/jdKeywords.length;
+  return jdKeywords.length ? matchCount / jdKeywords.length : 0;
 }
 
-// (III) Calclate ATS Score
+function ATSWithJD(extractedText, jd) {
+  const normalizedText = normalizeText(extractedText);
+  const jdKeywords = extractJDKeywords(jd);
 
-function ATSWithJD(extractedText, jd){
-  const normalizedText = normalizeText(extractedText)
-  const jdKeywords = extractJDKeyword(jd)
+  const JDMatchScore = matchJDAndResume(normalizedText, jdKeywords);
+  const structureScore = analyzeResumeStructure(normalizedText);
+  const actionVerbScore = analyzeActionVerbs(normalizedText);
 
-  const JDMatchScore = matchJDAndResume(normalizedText, jd)
-  const structureScore = analyzeResumeStructure(normalizedText)
-  const actionVerbScore = analyzeActionVerbs(normalizedText)
-
-  const ATS_Score = JDMatchScore*0.5 + structureScore*0.25 + actionVerbScore*0.25;
+  const ATS_Score =
+    JDMatchScore * 0.5 + structureScore * 0.25 + actionVerbScore * 0.25;
 
   return {
-    ATS_Score: ATS_Score,
+    ATS_Score,
     breakdown: {
       JDMatchScore,
       structureScore,
-      actionVerbScore
-    }
-  }
+      actionVerbScore,
+    },
+  };
 }
 
-// Master function for calculating ATS Score
-
-function calcualteATS_Score({extractedText, jd = null}){
-  if(jd){
-    return ATSWithJD(extractedText, jd)
-  }
-  else{
-    return ATSWithoutJD(extractedText)
-  }
+// Master ATS function
+function calculateATS_Score({ extractedText, jd = null }) {
+  return jd ? ATSWithJD(extractedText, jd) : ATSWithoutJD(extractedText);
 }
 
-// ========================================== Master function to handle PDF uploads ================================
+// ========================================== RESUME UPLOAD ==========================================
 
 const handleResumeUpload = async (req, res) => {
   try {
@@ -310,17 +327,17 @@ const handleResumeUpload = async (req, res) => {
 
     const pdfBuffer = req.file.buffer;
 
-    // First extract the text from PDF
+    // Detect PDF type
+    const isText = await isTextPDF(pdfBuffer);
+    const pdfType = isText ? "TEXT" : "OCR";
+
     const extractedText = await processPDF(pdfBuffer);
 
-    // calculating the ATS Score 
-
-    const ATS_Score = calcualteATS_Score({
+    const ATS_Score = calculateATS_Score({
       extractedText,
-      jd: req.body.js || null
-    })
+      jd: req.body.jd || null,
+    });
 
-    // manual upload to cloudinary after processing
     const uploadResult = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
@@ -337,21 +354,22 @@ const handleResumeUpload = async (req, res) => {
       stream.end(pdfBuffer);
     });
 
-    // finally save the obtained URL in the DB
     const savedResume = await Resume.create({
       userID: req.userID,
       fileURL: uploadResult.secure_url,
       fileID: uploadResult.public_id,
+      pdfType,
       extractedText,
       extractionStatus: "SUCCESS",
-      atsScore: ATS_Score,
+      atsScore: ATS_Score.ATS_Score,
+      atsBreakdown: ATS_Score.breakdown,
       uploadTime: new Date(),
     });
 
     res.status(201).json({
       message: "Resume uploaded & processed successfully",
       resumeID: savedResume._id,
-      extractedText,
+      ATS_Score,
     });
   } catch (error) {
     console.error("Resume upload error:", error);
@@ -361,33 +379,33 @@ const handleResumeUpload = async (req, res) => {
   }
 };
 
+// ========================================== FETCH RESULT ==========================================
+
 const fetchResumeResults = async (req, res) => {
   const { id } = req.params;
+
   try {
-    let doc = await Resume.findById(id);
+    const doc = await Resume.findById(id);
     if (!doc) {
-      return res
-        .status(404)
-        .json({ message: "No document was found with this id" });
+      return res.status(404).json({ message: "Document not found" });
     }
+
     if (doc.userID.toString() !== req.userID) {
       return res
         .status(httpStatus.FORBIDDEN)
-        .json({ message: "You are not allowed to access this document" });
+        .json({ message: "Access denied" });
     }
-    return res.status(httpStatus.OK).json({
-      message: "Document fetched successfully !!!",
+
+    res.status(httpStatus.OK).json({
+      message: "Document fetched successfully",
       pdfType: doc.pdfType,
-      extractedText:
-        doc.extractedText || "No extracted text was found for this document",
+      extractedText: doc.extractedText,
       extractionStatus: doc.extractionStatus,
-      extractionError: doc.extractionError || null,
+      atsScore: doc.atsScore,
     });
   } catch (error) {
-    console.log("This error occured in doc retrieval : ", error);
-    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      message:
-        "There was some internal server error in retriveing your document. Please try again later.",
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      message: "Error fetching document",
     });
   }
 };

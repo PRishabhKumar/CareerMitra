@@ -3,6 +3,7 @@ import "./Styles/HomeStyle.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
+import Loader from "./Loader.jsx";
 function Home() {
   const router = useNavigate();
   const [file, setFile] = useState(null);
@@ -10,6 +11,7 @@ function Home() {
   const [error, setError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [hasJD, setHasJD] = useState(false); // this determined if the user has a JD or not
+  const [loading, setLoading] = useState(false);
 
   const handleFileUpload = (e) => {
     const selectedFile = e.target.files[0];
@@ -56,6 +58,7 @@ function Home() {
     // Simulate upload delay for effect if needed, or just delete this comment
     try {
       setMessage("Uploading...");
+      setLoading(true)
       const res = await axios.post(
         "http://localhost:3000/api/v1/users/upload-resume",
         formData,
@@ -71,6 +74,9 @@ function Home() {
         "Resume uploaded successfully! Redirecting to results page..."
       );
       setError("");
+      setTimeout(()=>{
+        setLoading(false)
+      }, 1500)
       setTimeout(() => {
         router(`/results/${resumeID}`, { state: { resumeID } });
       }, 2000);
@@ -78,6 +84,7 @@ function Home() {
       console.error("Upload error:", error);
       setError("Failed to upload. Please try again.");
       setMessage("");
+      setLoading(false)
     }
   };
 
@@ -350,6 +357,15 @@ function Home() {
         </div>
 
         <div className="background-glow"></div>
+        {
+          loading && (
+            <>
+              <div className="loaderContainer">
+                <Loader/>
+              </div>
+            </>
+          )
+        }
       </div>
     </>
   );

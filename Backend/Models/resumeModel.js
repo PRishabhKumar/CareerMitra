@@ -9,7 +9,6 @@ const resumeSchema = new mongoose.Schema(
       index: true,
     },
 
-    // Cloudinary / storage metadata
     fileURL: {
       type: String,
       required: true,
@@ -20,7 +19,6 @@ const resumeSchema = new mongoose.Schema(
       required: true,
     },
 
-    // PDF processing metadata
     pdfType: {
       type: String,
       enum: ["TEXT", "OCR", "MIXED"],
@@ -43,7 +41,6 @@ const resumeSchema = new mongoose.Schema(
       default: null,
     },
 
-    // Future AI outputs (OPTIONAL but READY)
     aiRefinedText: {
       type: String,
       default: "",
@@ -57,8 +54,13 @@ const resumeSchema = new mongoose.Schema(
     atsScore: {
       type: Number,
       min: 0,
-      max: 100,
-      default: null,
+      max: 1,          
+      required: true,
+    },
+
+    atsBreakdown: {
+      type: mongoose.Schema.Types.Mixed,
+      required: true,
     },
 
     uploadTime: {
@@ -67,7 +69,7 @@ const resumeSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // adds createdAt & updatedAt
+    timestamps: true, // createdAt & updatedAt
   }
 );
 

@@ -11,7 +11,8 @@ function Results() {
   const [extractedText, setExtractedText] = useState("");
   const [extractionStatus, setExtractionStatus] = useState("");
   const [extractionError, setExtractionError] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [ATS_Score, setATS_Score] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");  
 
   // Animation state
   const [showContent, setShowContent] = useState(false);
@@ -35,7 +36,8 @@ function Results() {
       setMessage(data.message);
       setPdfType(data.pdfType);
       setExtractedText(data.extractedText);
-      setExtractionStatus(data.extractionStatus);
+      setExtractionStatus(data.extractionStatus);      
+      setATS_Score(Number((data.atsScore*100).toFixed(2)))      
       setShowContent(true);
     } catch (error) {
       console.log("This error occured in fetching the results : ", error);
@@ -52,9 +54,9 @@ function Results() {
 
       <div className="results-content">
         <header className="results-header">
-            <h1>
-                Analysis <span className="highlight-text">Results</span>
-            </h1>
+          <h1>
+            Analysis <span className="highlight-text">Results</span>
+          </h1>
           <button onClick={() => router("/home")} className="back-button">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -72,7 +74,6 @@ function Results() {
             </svg>
             Back to Home
           </button>
-          
         </header>
         <div className={`status-grid ${showContent ? "animate-in" : ""}`}>
           <div className="status-card">
@@ -129,6 +130,76 @@ function Results() {
             </div>
           </div>
         </div>
+
+        {ATS_Score > 0 && (
+          <div className="ats-score-container animate-in">
+            <div className="ats-score-header">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <h2>ATS Compatibility Score</h2>
+            </div>
+            <div className="ats-score-content">
+              <div className="score-circle">
+                <svg className="score-ring" viewBox="0 0 120 120">
+                  <circle
+                    className="score-ring-background"
+                    cx="60"
+                    cy="60"
+                    r="54"
+                  ></circle>
+                  <circle
+                    className="score-ring-progress"
+                    cx="60"
+                    cy="60"
+                    r="54"
+                    style={{
+                      strokeDashoffset: `${
+                        339.292 - (339.292 * ATS_Score) / 100
+                      }`,
+                    }}
+                  ></circle>
+                </svg>
+                <div className="score-value">
+                  <span className="score-number">{ATS_Score}</span>                  
+                </div>
+              </div>
+              <div className="score-description">
+                <p className="score-label">
+                  {ATS_Score >= 80
+                    ? "Excellent"
+                    : ATS_Score >= 60
+                    ? "Good"
+                    : ATS_Score >= 40
+                    ? "Fair"
+                    : "Needs Improvement"}
+                </p>
+                <p className="score-text">
+                  Your resume is{" "}
+                  {ATS_Score >= 80
+                    ? "highly optimized"
+                    : ATS_Score >= 60
+                    ? "well optimized"
+                    : ATS_Score >= 40
+                    ? "moderately optimized"
+                    : "not well optimized"}{" "}
+                  for Applicant Tracking Systems
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {(errorMessage || extractionError) && (
           <div className="error-banner animate-in">
