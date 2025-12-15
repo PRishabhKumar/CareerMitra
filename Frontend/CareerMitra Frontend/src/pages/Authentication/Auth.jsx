@@ -12,7 +12,7 @@ function Auth() {
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [emailID, setEmailID] = useState("");
-  const [formState, setFormState] = useState(0);
+  const [formState, setFormState] = useState(1);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
