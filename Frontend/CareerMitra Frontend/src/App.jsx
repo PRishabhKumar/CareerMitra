@@ -1,3 +1,4 @@
+import React from 'react'
 import { useState } from 'react'
 import {AuthProvider} from "./Contexts/AuthContext.jsx"
 import {Route, BrowserRouter as Router, Routes} from "react-router-dom"

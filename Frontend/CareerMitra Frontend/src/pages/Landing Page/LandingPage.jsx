@@ -1,3 +1,4 @@
+import React from 'react'
 import "./styles/landingPageStyles.css";
 import Navbar from "../Home/Navbar.jsx";
 import { Link } from "react-router-dom";

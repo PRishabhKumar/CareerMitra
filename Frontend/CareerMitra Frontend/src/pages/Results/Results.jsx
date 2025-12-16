@@ -1,3 +1,4 @@
+import React from 'react'
 import "./Styles/resultsStyle.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";

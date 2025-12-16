@@ -1,3 +1,4 @@
+import React from 'react'
 import "./Styles/AuthStyle.css";
 import { useState, useContext } from "react";
 import { useRef } from "react";
