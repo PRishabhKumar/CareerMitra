@@ -26,6 +26,13 @@ function Results() {
   // Animation state
   const [showContent, setShowContent] = useState(false);
 
+  // function to handle AI analysis 
+
+  const handleClick = async()=>{
+    
+    router("/analysis")
+  }
+
   const fetchResults = async () => {
     if (!resumeID) {
       setErrorMessage("No resume ID was received.");
@@ -277,7 +284,7 @@ function Results() {
             if(value != null && value != undefined){
               return(
                 <>                  
-                  <div className="breakdownComponentContainer">
+                  <div key={key} className="breakdownComponentContainer">
                     <div>{key}</div>
                     <div>{Number((value*100).toFixed(2))}</div>
                   </div>
@@ -286,7 +293,7 @@ function Results() {
             }
           })
         }
-
+        <button onClick={handleClick}>Analyze using AI</button>
       </div>
     </div>
   );

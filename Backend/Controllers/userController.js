@@ -9,11 +9,15 @@ import { PDFDocument } from "pdf-lib";
 import axios from "axios";
 import fs from "fs";
 import { exec } from "child_process";
+import {GoogleGenerativeAI} from '@google/generative-ai'
 import { createWorker } from "tesseract.js";
 import path from "path";
 import { UserModel } from "../Models/userModel.js";
 import Resume from "../Models/resumeModel.js";
 import cloudinary from "../config/cloudinaryConfig.js";
+
+
+const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 
 // ========================================== Skills Dictionary ==========================================
 
@@ -415,4 +419,197 @@ const fetchResumeResults = async (req, res) => {
   }
 };
 
-export { register, login, handleResumeUpload, fetchResumeResults };
+// ========================================== AI ANALYSIS ==========================================
+
+// Step 1 set up Gemini API key and function to chat with it 
+
+const geminiSetup = async (prompt)=>{
+  try{
+      const model = ai.getGenerativeModel({model: "gemini-2.5-flash"})
+      const result = await model.generateContent(prompt)
+      const response = await result.response
+      const text = response.text
+      return res.status(httpStatus.OK).json({message: "Response fetched successfully from AI", 
+        text
+      })
+  }
+  catch(error){
+      res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message: "There was some internal server error in connecting with the AI"})
+  }
+}
+
+const handleAIAnalysis = async(extractedText, JD)=>{
+  try{
+    let prompt = ``
+    if(JD){
+      prompt = `You are an expert ATS specialist and career consultant. Analyze this resume against the job     description and provide actionable feedback.
+        **RESUME:**
+        ${resumeText}
+        **JOB DESCRIPTION:**
+        ${jobDescription}
+        **Provide analysis in this format:**
+        **1. ATS SCORE & KEYWORD ANALYSIS (0-100)**
+        - Overall score with brief justification
+        - Critical missing keywords from JD
+        - Keyword placement recommendations
+        **2. SKILLS & EXPERIENCE GAP**
+        - Required skills/qualifications missing or underrepresented
+        - Experience misalignments with JD requirements
+        **3. CONTENT ISSUES (with specific examples)**
+        - Weak bullet points (list 3-5 with improvement suggestions)
+        - Missing quantifiable achievements
+        - Passive language or vague statements
+        - Irrelevant information for this role
+        **4. STRUCTURAL PROBLEMS**
+        - Formatting inconsistencies
+        - Missing or weak sections
+        - Length issues
+        **5. TOP 10 PRIORITY IMPROVEMENTS**
+        Rank by impact (HIGH/MEDIUM/LOW priority):
+        - Be specific and actionable
+        - Tie each recommendation to JD requirements
+        **6. COMPETITIVE EDGE**
+        - Unique strengths to emphasize
+        - How this resume compares to typical candidates
+        Be direct and specific. Use examples from the resume. Focus on changes that improve JD match.`
+      }
+      else{
+        prompt = `You are an expert resume writer with cross-industry knowledge. Conduct a comprehensive analysis to improve this resume.
+        **RESUME:**
+        ${resumeText}
+
+        **Provide analysis in this format:**
+
+        **1. FIRST IMPRESSION (6-Second Test)**
+        - Overall professional presentation score (0-100)
+        - Does it immediately highlight strongest qualifications?
+        - Visual hierarchy and readability
+
+        **2. STRUCTURE & FORMAT**
+        - Section organization issues
+        - Inconsistencies in formatting
+        - Missing recommended sections
+        - Appropriate length for experience level
+
+        **3. CONTENT QUALITY ANALYSIS**
+        Identify with examples:
+        - 5 weakest bullet points → how to strengthen them
+        - Missing quantifiable metrics (%, $, numbers, scale)
+        - Weak action verbs → strong alternatives
+        - Grammar/spelling/tense errors
+        - Buzzwords without substance
+
+        **4. SECTION EVALUATIONS**
+
+        **Experience:**
+        - Achievement vs responsibility ratio
+        - STAR method usage
+        - Career progression clarity
+
+        **Skills:**
+        - Organization and categorization
+        - Outdated/irrelevant skills to remove
+        - High-demand skills missing
+
+        **Summary/Objective:**
+        - Effectiveness assessment
+        - Rewrite suggestion if weak/missing
+
+        **5. ATS READINESS**
+        - Format compatibility issues
+        - Keyword density and variety
+        - Section header standardization
+
+        **6. WHAT'S MISSING**
+        - Projects, certifications, awards
+        - Relevant volunteer work or leadership
+        - Industry-specific credentials
+
+        **7. WHAT TO REMOVE**
+        - Outdated or irrelevant information
+        - Generic filler content
+
+        **8. PRIORITIZED ACTION PLAN**
+
+        **Immediate (High Impact):**
+        5 critical changes
+
+        **Secondary (Important):**
+        5 valuable improvements
+
+        **Polish:**
+        3 final refinements
+
+        **9. STRENGTHS TO MAINTAIN**
+        - 3 strongest aspects of current resume
+        - Unique selling points to preserve
+
+        Be constructive, specific, and actionable. Include before/after examples.`
+      }
+    const analysisReport = await geminiSetup(prompt)
+    return res.status(httpStatus.OK).json({message: "Analysis report fetched successfully...",
+        report: analysisReport
+      })
+  }
+  catch(error){
+    console.log(`This error occured in fetching the response from AI : ${error}`)
+    return res.status(httpsStatus.INTERNAL_SERVER_ERROR).json({message: "There was some error in connecting with the servers, please try again after a while..."})
+  }
+}
+
+const handleAICodeGeneration = async(extractedText, JD)=>{
+  try{
+    let codingPrompt = `You are an expert resume writer and LaTeX developer. Create an optimized, ATS-friendly resume in LaTeX based on the analysis provided.
+    **ORIGINAL RESUME:**
+    ${resumeText}
+    
+    **IMPROVEMENTS TO IMPLEMENT:**
+    ${analysisReport}
+    
+    **REQUIREMENTS:**
+    
+    **1. IMPLEMENT ALL ANALYSIS RECOMMENDATIONS**
+    - Fix all identified issues
+    - Strengthen weak bullet points with action verbs and metrics
+    - Add missing sections and keywords naturally
+    - Remove irrelevant content
+    
+    **2. LATEX SPECIFICATIONS**
+    - Use \\documentclass[11pt,a4paper]{article}
+    - Single-column layout (ATS-friendly)
+    - Standard packages only: geometry, enumitem, hyperref, fontenc
+    - No tables for layout, no graphics, no headers/footers
+    - Standard section headers: EXPERIENCE, EDUCATION, SKILLS
+    - Clean, parseable structure
+    
+    **3. CONTENT FORMULA**
+    - Summary: 2-3 lines capturing key value and expertise
+    - Experience bullets: Use "Accomplished [X] measured by [Y] by doing [Z]"
+    - 3-5 bullets per role (more detail for recent positions)
+    - Skills: Organized by category, most relevant first
+    - Include both acronyms and full terms: "Machine Learning (ML)"
+    
+    **4. QUALITY STANDARDS**
+    ✓ Strong action verbs (Led, Architected, Optimized, Increased)
+    ✓ Quantifiable results in every bullet where possible
+    ✓ Consistent tense (past for old roles, present for current)
+    ✓ All special characters escaped (%, $, &, #)
+    ✓ No placeholders - use actual content from original resume
+    ✓ Professional, polished language
+    ✓ Proper spacing and formatting
+    
+    **OUTPUT:**
+    Return ONLY the complete LaTeX code wrapped in \`\`\`latex code block. No explanations. Ensure it compiles without errors and preserves all original information while implementing improvements.
+    
+    Generate the refined resume now:`
+    let code = await geminiSetup(codingPrompt)
+    return res.status(httpsStatus.OK).json({message: "Code fetched successfully...",
+      code: code
+    })
+  }
+  catch(error){
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message: "There was some internal server error in fetching the response"})
+  }
+}
+
+export { register, login, handleResumeUpload, fetchResumeResults, handleAIAnalysis, handleAICodeGeneration };

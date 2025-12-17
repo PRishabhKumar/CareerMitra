@@ -41,6 +41,11 @@ const resumeSchema = new mongoose.Schema(
       default: null,
     },
 
+    aiReport: {
+      type: String,
+      default: ""
+    },
+
     aiRefinedText: {
       type: String,
       default: "",
