@@ -656,3 +656,62 @@ button {
     text-align: left;
   }
 }
+/* AI Analyze Button */
+.ai-analyze-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 400px;
+  margin: 2rem auto 0 auto;
+  padding: 1.25rem 2.5rem;
+  background: linear-gradient(135deg, var(--bg-dark) 0%, #1e293b 100%);
+  color: var(--accent-primary);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 16px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+/* Glow Pulse on Hover */
+.ai-analyze-btn:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4),
+    inset 0 0 10px rgba(212, 175, 55, 0.1);
+  color: #fff;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+}
+
+.ai-analyze-btn svg {
+  transition: all 0.5s ease;
+  filter: drop-shadow(0 0 2px var(--accent-primary));
+}
+
+.ai-analyze-btn:hover svg {
+  transform: rotate(15deg) scale(1.1);
+  filter: drop-shadow(0 0 8px #fff);
+  color: #fff;
+}
+
+/* Active State 'Click' Effect */
+.ai-analyze-btn:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+@media (max-width: 768px) {
+  .ai-analyze-btn {
+    width: 90%;
+    font-size: 1.1rem;
+    padding: 1rem;
+  }
+}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import "./Styles/resultsStyle.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -19,19 +19,18 @@ function Results() {
     structureScore: "",
     actionVerbScore: "",
     keywordScore: "",
-    JDMatchScore: jd ? "" : null
-  })
-  const [errorMessage, setErrorMessage] = useState("");  
+    JDMatchScore: jd ? "" : null,
+  });
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Animation state
   const [showContent, setShowContent] = useState(false);
 
-  // function to handle AI analysis 
+  // function to handle AI analysis
 
-  const handleClick = async()=>{
-    
-    router("/analysis")
-  }
+  const handleClick = async () => {
+    router("/analysis", { state: { extractedText, jd } });
+  };
 
   const fetchResults = async () => {
     if (!resumeID) {
@@ -52,11 +51,11 @@ function Results() {
       setMessage(data.message);
       setPdfType(data.pdfType);
       setExtractedText(data.extractedText);
-      setExtractionStatus(data.extractionStatus);      
-      setATS_Score(Number((data.atsScore*100).toFixed(2)))   
-      setJd(data.jd)   
+      setExtractionStatus(data.extractionStatus);
+      setATS_Score(Number((data.atsScore * 100).toFixed(2)));
+      setJd(data.jd);
       setShowContent(true);
-      setBreakdown(data.atsBreakdown)
+      setBreakdown(data.atsBreakdown);
     } catch (error) {
       console.log("This error occured in fetching the results : ", error);
       setErrorMessage("Failed to fetch results. Please try again.");
@@ -190,7 +189,7 @@ function Results() {
                   ></circle>
                 </svg>
                 <div className="score-value">
-                  <span className="score-number">{ATS_Score}</span>                  
+                  <span className="score-number">{ATS_Score}</span>
                 </div>
               </div>
               <div className="score-description">
@@ -267,33 +266,48 @@ function Results() {
           </div>
         )}
 
-        {
-          jd && (
-            <>
+        {jd && (
+          <>
             <h3>Attached Job Description</h3>
-              <div className="jdContainer">
-                {jd}
-              </div>
-            </>
-          )
-        }
+            <div className="jdContainer">{jd}</div>
+          </>
+        )}
         <h3>ATS Score breakdown...</h3>
-        {
-          breakdown && 
-          Object.entries(breakdown).map(([key, value])=>{
-            if(value != null && value != undefined){
-              return(
-                <>                  
+        {breakdown &&
+          Object.entries(breakdown).map(([key, value]) => {
+            if (value != null && value != undefined) {
+              return (
+                <>
                   <div key={key} className="breakdownComponentContainer">
                     <div>{key}</div>
-                    <div>{Number((value*100).toFixed(2))}</div>
+                    <div>{Number((value * 100).toFixed(2))}</div>
                   </div>
                 </>
-              )
+              );
             }
-          })
-        }
-        <button onClick={handleClick}>Analyze using AI</button>
+          })}
+        <button className="ai-analyze-btn" onClick={handleClick}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path
+              d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"
+              style={{ display: "none" }}
+            />
+            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
+            <path d="M20 3v4" />
+            <path d="M22 5h-4" />
+          </svg>
+          Analyze using AI
+        </button>
       </div>
     </div>
   );
