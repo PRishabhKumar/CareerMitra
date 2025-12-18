@@ -4,14 +4,20 @@ import axios from "axios";
 import Navbar from "../Home/Navbar";
 import Loader from "../Home/Loader";
 import "./Styles/AnalysisStyle.css";
+import { useNavigate } from "react-router-dom";
 
 function Analysis() {
+  const router = useNavigate()
   const location = useLocation();
   const { extractedText, JD } = location.state || {};
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [report, setReport] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleGenerateCode = async()=>{
+    router("/code", {state: {extractedText, JD}})
+  }
 
   const handleFetchAnalysis = async () => {
     try {
@@ -182,6 +188,7 @@ function Analysis() {
                 >
                   Regenerate
                 </button>
+                <button onClick={handleGenerateCode}>Get Refined Document using AI</button>
               </div>
             </div>
           )}

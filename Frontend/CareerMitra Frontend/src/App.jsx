@@ -8,6 +8,7 @@ import Navbar from './pages/Home/Navbar.jsx'
 import LandingPage from './pages/Landing Page/LandingPage.jsx'
 import Results from './pages/Results/Results.jsx'
 import Analysis from './pages/AnalysisPage/Analysis.jsx'
+import CodePage from './pages/CodePage/CodePage.jsx'
 function App() {
   return (
     <>
@@ -20,7 +21,8 @@ function App() {
               <Route path='/auth' element={<Auth/>}/>
               <Route path='/home' element={<Home/>}/>    
               <Route path='/results/:id' element={<Results/>}/>  
-              <Route path='/analysis' element={<Analysis/>}/>        
+              <Route path='/analysis' element={<Analysis/>}/> 
+              <Route path='/code' element={<CodePage/>}/>       
             </Routes>
           </AuthProvider>
         </Router>
