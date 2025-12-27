@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import { useState } from "react";
 import "./Styles/HomeStyle.css";
 import axios from "axios";
@@ -350,7 +350,7 @@ function Home() {
         <div className="background-glow"></div>
         {loading && (
           <>
-            <div className="loaderContainer">
+            <div className="loader-overlay">
               <Loader />
             </div>
           </>

@@ -57,32 +57,6 @@ html {
   justify-content: center; /* Center content vertically since navbar is gone */
 }
 
-/* Background Effects */
-.background-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60vw;
-  height: 60vw;
-  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-  opacity: 0.15;
-  z-index: -1;
-  pointer-events: none;
-  animation: pulse 8s infinite alternate;
-}
-
-@keyframes pulse {
-  0% {
-    opacity: 0.15;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  100% {
-    opacity: 0.25;
-    transform: translate(-50%, -50%) scale(1.1);
-  }
-}
-
 /* Main Content Grid */
 .content-grid {
   display: grid;
@@ -347,23 +321,6 @@ html {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.2);
   color: var(--error-red);
-}
-
-/* Loader Overlay Container */
-.loaderContainer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  animation: fadeIn 0.3s ease-in-out;
 }
 
 @keyframes fadeIn {
@@ -714,4 +671,21 @@ html {
   .upload-form {
     padding: 1.5rem;
   }
+}
+
+/* Loader Overlay */
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-in-out;
 }

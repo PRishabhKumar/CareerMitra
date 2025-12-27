@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const Loader = () => {
   return (
@@ -11,7 +11,7 @@ const Loader = () => {
       </div>
     </StyledWrapper>
   );
-}
+};
 
 const StyledWrapper = styled.div`
   /* Container for loader */
@@ -32,19 +32,6 @@ const StyledWrapper = styled.div`
     box-shadow: 0 0 12px rgba(4, 136, 252, 0.8);
     animation: scaleBounce 1.2s infinite ease-in-out;
     position: relative;
-  }
-
-  /* Splash effect */
-  .loader-square::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 247, 255, 0.5);
-    border-radius: 50%;
-    opacity: 0;
-    transform: scale(1);
-    animation: splash 1.2s infinite ease-in-out;
   }
 
   /* Animations for each square */
@@ -70,20 +57,6 @@ const StyledWrapper = styled.div`
       opacity: 1;
     }
   }
-
-  @keyframes splash {
-    0% {
-      opacity: 0.6;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0;
-      transform: scale(2);
-    }
-    100% {
-      opacity: 0;
-      transform: scale(2.5);
-    }
   }`;
 
 export default Loader;
