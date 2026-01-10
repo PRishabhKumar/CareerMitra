@@ -7,7 +7,7 @@ import "./Styles/AnalysisStyle.css";
 import { useNavigate } from "react-router-dom";
 
 function Analysis() {
-  const router = useNavigate()
+  const router = useNavigate();
   const location = useLocation();
   const { extractedText, JD } = location.state || {};
   const [message, setMessage] = useState("");
@@ -15,9 +15,9 @@ function Analysis() {
   const [report, setReport] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleGenerateCode = async()=>{
-    router("/code", {state: {extractedText, JD}})
-  }
+  const handleGenerateCode = async () => {
+    router("/code", { state: { extractedText, JD } });
+  };
 
   const handleFetchAnalysis = async () => {
     try {
@@ -188,7 +188,12 @@ function Analysis() {
                 >
                   Regenerate
                 </button>
-                <button onClick={handleGenerateCode}>Get Refined Document using AI</button>
+                <button
+                  className="refined-doc-btn"
+                  onClick={handleGenerateCode}
+                >
+                  Get Refined Document using AI
+                </button>
               </div>
             </div>
           )}

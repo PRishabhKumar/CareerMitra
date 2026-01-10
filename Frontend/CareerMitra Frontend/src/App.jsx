@@ -9,6 +9,7 @@ import LandingPage from './pages/Landing Page/LandingPage.jsx'
 import Results from './pages/Results/Results.jsx'
 import Analysis from './pages/AnalysisPage/Analysis.jsx'
 import CodePage from './pages/CodePage/CodePage.jsx'
+import CodePreview from './pages/Code Preview/CodePreview.jsx'
 function App() {
   return (
     <>
@@ -22,7 +23,8 @@ function App() {
               <Route path='/home' element={<Home/>}/>    
               <Route path='/results/:id' element={<Results/>}/>  
               <Route path='/analysis' element={<Analysis/>}/> 
-              <Route path='/code' element={<CodePage/>}/>       
+              <Route path='/code' element={<CodePage/>}/>   
+              <Route path='/preview' element={<CodePreview/>}/>    
             </Routes>
           </AuthProvider>
         </Router>

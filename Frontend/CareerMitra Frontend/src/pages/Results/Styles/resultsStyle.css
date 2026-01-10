@@ -657,6 +657,7 @@ button {
   }
 }
 /* AI Analyze Button */
+
 .ai-analyze-btn {
   position: relative;
   display: flex;
@@ -664,54 +665,94 @@ button {
   justify-content: center;
   gap: 1rem;
   width: 100%;
-  max-width: 400px;
-  margin: 2rem auto 0 auto;
-  padding: 1.25rem 2.5rem;
-  background: linear-gradient(135deg, var(--bg-dark) 0%, #1e293b 100%);
+  max-width: 380px;
+  margin: 3rem auto 1rem auto;
+  padding: 1.1rem 2rem;
+
+  /* Glassmorphism & Gradient Border */
+  background: linear-gradient(#0f172a, #0f172a) padding-box,
+    linear-gradient(
+        135deg,
+        var(--accent-primary),
+        #fcd34d,
+        var(--accent-primary)
+      )
+      border-box;
+  border: 2px solid transparent;
+  border-radius: 50px; /* Pill shape for premium feel */
+
   color: var(--accent-primary);
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  border-radius: 16px;
-  font-size: 1.2rem;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.15rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   overflow: hidden;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5),
+    0 0 15px rgba(212, 175, 55, 0.1);
   z-index: 10;
 }
 
-/* Glow Pulse on Hover */
-.ai-analyze-btn:hover {
-  transform: translateY(-4px) scale(1.02);
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4),
-    inset 0 0 10px rgba(212, 175, 55, 0.1);
-  color: #fff;
-  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+/* Shimmer Effect */
+.ai-analyze-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.5s ease;
 }
 
+.ai-analyze-btn:hover::after {
+  left: 150%;
+  transition: left 0.7s ease;
+}
+
+/* Hover States */
+.ai-analyze-btn:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(212, 175, 55, 0.3);
+  color: #fff;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
+  background: linear-gradient(#0f172a, #0f172a) padding-box,
+    linear-gradient(135deg, #fcd34d, var(--accent-primary), #fcd34d) border-box;
+}
+
+.ai-analyze-btn:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Icon Animation */
 .ai-analyze-btn svg {
-  transition: all 0.5s ease;
-  filter: drop-shadow(0 0 2px var(--accent-primary));
+  width: 24px;
+  height: 24px;
+  transition: all 0.4s ease;
+  filter: drop-shadow(0 0 2px rgba(212, 175, 55, 0.5));
 }
 
 .ai-analyze-btn:hover svg {
   transform: rotate(15deg) scale(1.1);
-  filter: drop-shadow(0 0 8px #fff);
   color: #fff;
-}
-
-/* Active State 'Click' Effect */
-.ai-analyze-btn:active {
-  transform: translateY(-1px) scale(0.98);
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
 }
 
 @media (max-width: 768px) {
   .ai-analyze-btn {
     width: 90%;
-    font-size: 1.1rem;
+    font-size: 1rem;
     padding: 1rem;
+    max-width: none;
   }
 }

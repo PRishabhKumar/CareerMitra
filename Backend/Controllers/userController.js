@@ -498,9 +498,11 @@ const handleAICodeGeneration = async (req, res) => {
       });
     }
 
-    let codingPrompt = `Generate a professional LaTeX or Markdown resume code based on the following resume content. Make it ATS-friendly and well-structured.${
-      JD ? ` Optimize it for this job description: ${JD}` : ""
-    } Resume content: ${extractedText}`;
+    let codingPrompt =
+      process.env.CODING_PROMPT +
+      `${
+        JD ? ` Optimize it for this job description: ${JD}` : ""
+      } Resume content: ${extractedText}`;
 
     console.log("Generating code with Gemini...");
     let code = await geminiSetup(codingPrompt);

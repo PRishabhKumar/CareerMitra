@@ -5,7 +5,8 @@ import axios from "axios";
 import server from "../../environment.js"
 
 
-function CodePage() {
+
+function CodePage() {  
   const location = useLocation();
   const navigate = useNavigate();
   const { extractedText, JD } = location.state || {}; // Ensure case matches what triggers this page
@@ -184,6 +185,15 @@ function CodePage() {
           </div>
         )}
       </div>
+      <button onClick={()=>{
+        navigate("/preview", {
+          state: {
+            latexCode: code
+          }
+        })
+      }}>
+        Go to live preview
+      </button>
     </div>
   );
 }
