@@ -466,7 +466,6 @@ const handleAIAnalysis = async (req, res) => {
 
     console.log("Sending prompt to Gemini...");
     const analysisReport = await geminiSetup(prompt);
-    
 
     if (analysisReport === "ERROR") {
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
@@ -491,20 +490,34 @@ const handleAIAnalysis = async (req, res) => {
 const handleAICodeGeneration = async (req, res) => {
   try {
     const { extractedText, JD } = req.body;
-    let codingPrompt =
-      process.env.JD_ANALYSIS_PROMPT +
-      `Here is the resume : ${extractedText} and here is the JD : ${JD}`;
+
+    // Validation
+    if (!extractedText) {
+      return res.status(httpStatus.BAD_REQUEST).json({
+        message: "Extracted text is required",
+      });
+    }
+
+    let codingPrompt = `Generate a professional LaTeX or Markdown resume code based on the following resume content. Make it ATS-friendly and well-structured.${
+      JD ? ` Optimize it for this job description: ${JD}` : ""
+    } Resume content: ${extractedText}`;
+
+    console.log("Generating code with Gemini...");
     let code = await geminiSetup(codingPrompt);
+
+    if (code === "ERROR") {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Failed to generate code from AI",
+      });
+    }
+
     return res
-      .status(httpsStatus.OK)
+      .status(httpStatus.OK)
       .json({ message: "Code fetched successfully...", code: code });
   } catch (error) {
-    return res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json({
-        message:
-          "There was some internal server error in fetching the response",
-      });
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      message: "There was some internal server error in fetching the response",
+    });
   }
 };
 

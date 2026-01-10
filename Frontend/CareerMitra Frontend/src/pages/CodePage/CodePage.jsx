@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./Styles/CodePageStyle.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import server from "../../environment.js"
+
 
 function CodePage() {
   const location = useLocation();
@@ -25,7 +27,7 @@ function CodePage() {
 
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:3000/code", {
+      const res = await axios.post(`${server}/api/v1/users/code`, {
         extractedText: extractedText,
         JD: JD,
       });
