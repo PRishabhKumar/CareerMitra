@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./Styles/CodePageStyle.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import server from "../../environment.js"
+import server from "../../environment.js";
 
-
-
-function CodePage() {  
+function CodePage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { extractedText, JD } = location.state || {}; // Ensure case matches what triggers this page
@@ -185,15 +183,41 @@ function CodePage() {
           </div>
         )}
       </div>
-      <button onClick={()=>{
-        navigate("/preview", {
-          state: {
-            latexCode: code
-          }
-        })
-      }}>
-        Go to live preview
-      </button>
+      <div className="action-footer animate-up">
+        <button
+          className="live-preview-btn"
+          onClick={() => {
+            navigate("/preview", {
+              state: {
+                latexCode: code,
+              },
+            });
+          }}
+        >
+          <div className="live-badge-wrapper">
+            <span className="ping"></span>
+            <span className="dot"></span>
+          </div>
+          <span className="btn-text">Launch Live Preview</span>
+          <div className="btn-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </div>
+          <div className="btn-glow"></div>
+        </button>
+      </div>
     </div>
   );
 }

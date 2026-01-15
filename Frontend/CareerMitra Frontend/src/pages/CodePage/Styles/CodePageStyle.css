@@ -248,11 +248,24 @@ body {
   border-radius: 16px;
 }
 
-
 .loading-container p {
   color: var(--text-secondary);
   font-size: 1.1rem;
-  animation: pulse 2s infinite;
+  animation: text-pulse 2s infinite;
+  opacity: 0.8; /* Higher base opacity */
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.1); /* Slight shadow for crispness */
+}
+
+@keyframes text-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
 }
 
 /* Error Banner */
@@ -354,4 +367,133 @@ body {
   .filename {
     display: none; /* Hide filename on small screens if needed */
   }
+}
+/* Live Preview Button Context */
+.action-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 2rem;
+}
+
+.live-preview-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Text Styling */
+.live-preview-btn .btn-text {
+  color: #fff;
+  font-family: "Outfit", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  z-index: 2;
+}
+
+/* Icon Styling */
+.live-preview-btn .btn-icon {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  z-index: 2;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Live Badge (The Red/Green Dot) */
+.live-badge-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  z-index: 2;
+}
+
+.live-badge-wrapper .dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444; /* Red for "Live" / Recording feel */
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+.live-badge-wrapper .ping {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #ef4444;
+  opacity: 0.75;
+  animation: live-pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes live-pulse {
+  75%,
+  100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Glow Effect (The "Projection") */
+.live-preview-btn .btn-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0%;
+  height: 0%;
+  background: radial-gradient(
+    circle,
+    rgba(239, 68, 68, 0.4) 0%,
+    transparent 70%
+  );
+  transition: all 0.6s ease;
+  z-index: 1;
+  opacity: 0;
+  border-radius: 50%;
+}
+
+/* Hover States */
+.live-preview-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 20px rgba(239, 68, 68, 0.2);
+}
+
+.live-preview-btn:hover .btn-icon {
+  transform: translateX(4px);
+}
+
+.live-preview-btn:hover .btn-glow {
+  width: 150%;
+  height: 150%;
+  opacity: 1;
+}
+
+.live-preview-btn:hover .live-badge-wrapper .dot {
+  background-color: #f87171;
+}
+
+.live-preview-btn:active {
+  transform: translateY(0);
 }

@@ -1,0 +1,97 @@
+/* Flow Button Styles */
+
+.flow-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem; /* gap-1 */
+  overflow: hidden;
+  border-radius: 100px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3); /* Adapted for Dark Mode: Light Border */
+  background: transparent;
+  padding: 0.75rem 2rem; /* px-8 py-3 */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 600; /* font-semibold */
+  color: #ffffff; /* Adapted: White text */
+  cursor: pointer;
+  transition: all 600ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.flow-btn:hover {
+  border-color: transparent;
+  color: #000000; /* Adapted: Dark text on hover (inside light circle) */
+  border-radius: 12px;
+}
+
+.flow-btn:active {
+  transform: scale(0.95);
+}
+
+/* Left Arrow (arr-2) */
+.flow-btn .arrow-left {
+  position: absolute;
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+  left: -25%;
+  stroke: #ffffff; /* Adapted: White */
+  fill: none;
+  z-index: 9;
+  transition: all 800ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.flow-btn:hover .arrow-left {
+  left: 1rem; /* left-4 */
+  stroke: #000000; /* Adapted: Dark */
+}
+
+/* Text */
+.flow-btn .btn-text-span {
+  position: relative;
+  z-index: 10; /* Changed from 1 to 10 to ensure above circle */
+  transform: translateX(-0.75rem); /* -translate-x-3 */
+  transition: all 800ms ease-out;
+  display: inline-block;
+}
+
+.flow-btn:hover .btn-text-span {
+  transform: translateX(0.75rem); /* translate-x-3 */
+}
+
+/* Circle Background */
+.flow-btn .hover-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+  background: #ffffff; /* Adapted: White background */
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 1; /* Behind text */
+}
+
+.flow-btn:hover .hover-circle {
+  width: 220px;
+  height: 220px;
+  opacity: 1;
+}
+
+/* Right Arrow (arr-1) */
+.flow-btn .arrow-right {
+  position: absolute;
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+  right: 1rem; /* right-4 */
+  stroke: #ffffff; /* Adapted: White */
+  fill: none;
+  z-index: 9;
+  transition: all 800ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.flow-btn:hover .arrow-right {
+  right: -25%;
+  stroke: #000000; /* Adapted: Dark */
+}
