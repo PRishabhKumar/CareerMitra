@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {register, login, handleResumeUpload, fetchResumeResults, handleAIAnalysis, handleAICodeGeneration} from "../Controllers/userController.js"
+import {register, login, handleResumeUpload, fetchResumeResults, handleAIAnalysis, handleAICodeGeneration, handleLatexCompilation} from "../Controllers/userController.js"
 import upload from "../config/multerConfig.js"
 import {authenticateToken} from "../Middlewares/JWTMiddleware.js";
 const router  = Router()
@@ -10,5 +10,5 @@ router.route("/upload-resume").post(authenticateToken, upload.single("resume"), 
 router.route("/resumeResults/:id").get(authenticateToken, fetchResumeResults)
 router.route("/analyze").post(handleAIAnalysis)
 router.route("/code").post(handleAICodeGeneration)
-
+router.route("/compileLatex").post(handleLatexCompilation)
 export default router

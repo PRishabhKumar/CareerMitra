@@ -15,10 +15,13 @@ import path from "path";
 import { UserModel } from "../Models/userModel.js";
 import Resume from "../Models/resumeModel.js";
 import cloudinary from "../config/cloudinaryConfig.js";
+import latex from "node-latex";
+import { Readable } from "stream";
+import OpenAI from "openai";
 
 const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// ========================================== Skills Dictionary ==========================================
+// ========================================== SKILS DICTIONARY ==========================================
 
 const skillsDictionaryPath = path.join(
   process.cwd(),
@@ -31,7 +34,7 @@ const skillsDictionary = JSON.parse(
 
 console.log("Skills dictionary imported successfully");
 
-// ========================================== AUTH CONTROLLERS ==========================================
+// ========================================== AUTH CONTROLLERS ===========================================
 
 const register = async (req, res) => {
   try {
@@ -420,7 +423,7 @@ const fetchResumeResults = async (req, res) => {
 
 // ========================================== AI ANALYSIS ==========================================
 
-// Step 1 set up Gemini API key and function to chat with it
+// Step 1 set up AI API key and function to chat with it
 
 const geminiSetup = async (prompt) => {
   try {
@@ -523,6 +526,89 @@ const handleAICodeGeneration = async (req, res) => {
   }
 };
 
+// ========================================== Latex code compilation ==========================================
+
+const handleLatexCompilation = async (req, res) => {
+  let { latexCode } = req.body;
+
+  if (!latexCode) {
+    return res.status(404).json({ message: "No latex code was found" });
+  }
+
+  try {
+    console.log("=== LaTeX Compilation Started ===");
+    console.log("LaTeX code length:", latexCode.length);
+
+    // removing the markdown fences given by gemini
+    if (latexCode.startsWith("```latex") || latexCode.startsWith("```")) {
+      console.log("Removing markdown code fences...");
+      latexCode = latexCode
+        .replace(/^```latex\s*/i, "") // Remove opening ```latex
+        .replace(/^```\s*/i, "") // Remove opening ```
+        .replace(/\s*```\s*$/i, ""); // Remove closing ```
+    }
+    latexCode = latexCode.trim();
+
+    // Create readable stream
+    // const input = Readable.from([latexCode]);
+
+    // Compile with more detailed error handling
+    const pdf = latex(latexCode, {
+      cmd: "pdflatex",
+      passes: 2,
+      errorLogs: process.cwd() + "/latex-compilation-errors.log",
+    });
+
+    // Set headers
+    res.contentType("application/pdf");
+    res.setHeader("Content-Disposition", "inline; filename=resume.pdf");
+
+    // Handle errors BEFORE piping
+    pdf.on("error", (error) => {
+      console.error("=== LaTeX Compilation Error ===");
+      console.error("Error type:", error.name);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+
+      // Try to read error log file
+      try {
+        const fs = require("fs");
+        const errorLog = fs.readFileSync(
+          process.cwd() + "/latex-compilation-errors.log",
+          "utf8"
+        );
+        console.error("LaTeX Error Log:", errorLog);
+      } catch (logError) {
+        console.error("Could not read error log:", logError.message);
+      }
+
+      if (!res.headersSent) {
+        return res.status(500).json({
+          message: "LaTeX compilation failed",
+          error: error.message,
+        });
+      }
+    });
+
+    // Handle successful finish
+    pdf.on("finish", () => {
+      console.log("PDF generated successfully");
+    });
+
+    // Pipe to response
+    pdf.pipe(res);
+  } catch (error) {
+    console.error("=== Caught Exception ===");
+    console.error("Error:", error);
+    console.error("Stack:", error.stack);
+
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
 export {
   register,
   login,
@@ -530,4 +616,5 @@ export {
   fetchResumeResults,
   handleAIAnalysis,
   handleAICodeGeneration,
+  handleLatexCompilation,
 };
