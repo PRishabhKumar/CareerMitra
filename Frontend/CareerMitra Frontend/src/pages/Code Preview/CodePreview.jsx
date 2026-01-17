@@ -20,9 +20,15 @@ function CodePreview() {
   const [pdfURL, setPdfURL] = useState("");
   const [status, setStatus] = useState("");
 
+  const handleChatting = async () => {
+    console.log(
+      "Button was clicked and the handle chatting function was invoked",
+    );
+  };
+
   const handleCompilation = async () => {
     try {
-      const token = localStorage.getItem("token")
+      const token = localStorage.getItem("token");
       setLoading(true);
       let res = await axios.post(
         `${server}/api/v1/users/compileLatex`,
@@ -34,7 +40,7 @@ function CodePreview() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },        
+        },
       );
       const url = URL.createObjectURL(res.data);
       setPdfURL(url);
@@ -168,6 +174,39 @@ function CodePreview() {
             <div className="download-btn-container">
               <FlowButton text="Download PDF" onClick={handleDownloadPDF} />
             </div>
+          </div>
+        </div>
+
+        {/* Chat box for further refinements */}
+        <div className="chat-footer-section">
+          <div className="chat-input-wrapper">
+            <textarea
+              name="chat"
+              id="char"
+              rows="10"
+              cols="20"
+              className="chat-textarea custom-scrollbar"
+              placeholder="Got any changes or further suggestions? Type here to refined the code..."
+            ></textarea>
+            <button className="chat-submit-btn" onClick={handleChatting}>
+              <span className="btn-content">
+                <span>Refine with AI</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                </svg>
+              </span>
+              <div className="btn-shine"></div>
+            </button>
           </div>
         </div>
       </div>
