@@ -10,6 +10,8 @@ import Results from './pages/Results/Results.jsx'
 import Analysis from './pages/AnalysisPage/Analysis.jsx'
 import CodePage from './pages/CodePage/CodePage.jsx'
 import CodePreview from './pages/Code Preview/CodePreview.jsx'
+import ProtectRoute from './utils/ProtectRoute.jsx'
+import NotFound from './pages/Not Found Page/NotFound.jsx'
 function App() {
   return (
     <>
@@ -20,11 +22,36 @@ function App() {
             <Routes>
               <Route path='/' element={<LandingPage/>}/>
               <Route path='/auth' element={<Auth/>}/>
-              <Route path='/home' element={<Home/>}/>    
-              <Route path='/results/:id' element={<Results/>}/>  
-              <Route path='/analysis' element={<Analysis/>}/> 
-              <Route path='/code' element={<CodePage/>}/>   
-              <Route path='/preview' element={<CodePreview/>}/>    
+              <Route path='/home' element={
+                <ProtectRoute>
+                  <Home/>
+                </ProtectRoute>
+              }/>    
+              <Route path='/results/:id' element={
+                <ProtectRoute>
+                  <Results/>
+                </ProtectRoute>
+              }/>  
+              <Route path='/analysis' element={
+                <ProtectRoute>
+                  <Analysis/>
+                </ProtectRoute>
+              }/> 
+              <Route path='/code' element={
+                <ProtectRoute>
+                  <CodePage/>
+                </ProtectRoute>
+              }/>   
+              <Route path='/preview' element={
+                <ProtectRoute>
+                  <CodePreview/>
+                </ProtectRoute>
+              }/>  
+              <Route path='*' element={
+                <ProtectRoute>
+                  <NotFound/>
+                </ProtectRoute>
+              }/>  
             </Routes>
           </AuthProvider>
         </Router>

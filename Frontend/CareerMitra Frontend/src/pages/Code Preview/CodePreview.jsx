@@ -22,6 +22,7 @@ function CodePreview() {
 
   const handleCompilation = async () => {
     try {
+      const token = localStorage.getItem("token")
       setLoading(true);
       let res = await axios.post(
         `${server}/api/v1/users/compileLatex`,
@@ -30,7 +31,10 @@ function CodePreview() {
         },
         {
           responseType: "blob", // this tells axios that the response will be binary data and not JSON
-        }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },        
       );
       const url = URL.createObjectURL(res.data);
       setPdfURL(url);

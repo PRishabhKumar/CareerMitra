@@ -26,10 +26,17 @@ function CodePage() {
 
     setLoading(true);
     try {
+      const token = localStorage.getItem("token")
       const res = await axios.post(`${server}/api/v1/users/code`, {
         extractedText: extractedText,
-        JD: JD,
-      });
+        JD: JD,        
+      },
+      {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+      }
+    );
       const fetchedCode = res.data.code;
       setCode(fetchedCode);
       setMessage(res.data.message || "Refined doc fetched successfully...");

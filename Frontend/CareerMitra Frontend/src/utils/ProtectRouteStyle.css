@@ -1,0 +1,111 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap");
+
+.warningContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* Premium dark slate gradient matching the theme */
+  background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+  z-index: 9999;
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.5s ease-out forwards;
+  font-family: "Outfit", sans-serif;
+}
+
+.warningContainer::before {
+  /* Optional: subtle gold glow in the background for that premium feel */
+  content: "";
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.03) 0%,
+    transparent 70%
+  );
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.warningContainer h3 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  /* Theme Error Red */
+  color: #ef4444;
+  text-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
+  animation: slideDown 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  letter-spacing: 1px;
+}
+
+.warningContainer p {
+  font-size: 1.25rem;
+  /* Theme Text Secondary */
+  color: #94a3b8;
+  /* Theme Card BG with Glass effect */
+  background: rgba(30, 41, 59, 0.4);
+  padding: 1.5rem 3rem;
+  border-radius: 16px;
+  /* Theme Glass Border */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.2s;
+  opacity: 0;
+  text-align: center;
+  max-width: 90%;
+}
+
+/* Add a gold accent line to the message box */
+.warningContainer p::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: #d4af37; /* Theme Gold */
+  margin: 1.5rem auto 0 auto;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

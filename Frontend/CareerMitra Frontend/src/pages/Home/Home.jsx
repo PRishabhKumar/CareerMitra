@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import "./Styles/HomeStyle.css";
-import axios from "axios";
+import axios from "axios"
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 import Loader from "./Loader.jsx";
