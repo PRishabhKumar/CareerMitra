@@ -1,62 +1,86 @@
-import React from 'react'
-import { useState } from 'react'
-import {AuthProvider} from "./Contexts/AuthContext.jsx"
-import {Route, BrowserRouter as Router, Routes} from "react-router-dom"
-import Auth from './pages/Authentication/Auth.jsx'
-import Home from './pages/Home/Home.jsx'
-import Navbar from './pages/Home/Navbar.jsx'
-import LandingPage from './pages/Landing Page/LandingPage.jsx'
-import Results from './pages/Results/Results.jsx'
-import Analysis from './pages/AnalysisPage/Analysis.jsx'
-import CodePage from './pages/CodePage/CodePage.jsx'
-import CodePreview from './pages/Code Preview/CodePreview.jsx'
-import ProtectRoute from './utils/ProtectRoute.jsx'
-import NotFound from './pages/Not Found Page/NotFound.jsx'
+import React from "react";
+import { useState } from "react";
+import { AuthProvider } from "./Contexts/AuthContext.jsx";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Auth from "./pages/Authentication/Auth.jsx";
+import Home from "./pages/Home/Home.jsx";
+import Navbar from "./pages/Home/Navbar.jsx";
+import LandingPage from "./pages/Landing Page/LandingPage.jsx";
+import Results from "./pages/Results/Results.jsx";
+import Analysis from "./pages/AnalysisPage/Analysis.jsx";
+import CodePage from "./pages/CodePage/CodePage.jsx";
+import CodePreview from "./pages/Code Preview/CodePreview.jsx";
+import ProtectRoute from "./utils/ProtectRoute.jsx";
+import NotFound from "./pages/Not Found Page/NotFound.jsx";
+import FeaturesPage from "./pages/Features/FeaturesPage.jsx";
 function App() {
   return (
     <>
-        
-        <Router>
-          <AuthProvider>
-            <Navbar/>
-            <Routes>
-              <Route path='/' element={<LandingPage/>}/>
-              <Route path='/auth' element={<Auth/>}/>
-              <Route path='/home' element={
+      <Router>
+        <AuthProvider>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route
+              path="/home"
+              element={
                 <ProtectRoute>
-                  <Home/>
+                  <Home />
                 </ProtectRoute>
-              }/>    
-              <Route path='/results/:id' element={
+              }
+            />
+            <Route
+              path="/results/:id"
+              element={
                 <ProtectRoute>
-                  <Results/>
+                  <Results />
                 </ProtectRoute>
-              }/>  
-              <Route path='/analysis' element={
+              }
+            />
+            <Route
+              path="/analysis"
+              element={
                 <ProtectRoute>
-                  <Analysis/>
+                  <Analysis />
                 </ProtectRoute>
-              }/> 
-              <Route path='/code' element={
+              }
+            />
+            <Route
+              path="/code"
+              element={
                 <ProtectRoute>
-                  <CodePage/>
+                  <CodePage />
                 </ProtectRoute>
-              }/>   
-              <Route path='/preview' element={
+              }
+            />
+            <Route
+              path="/preview"
+              element={
                 <ProtectRoute>
-                  <CodePreview/>
+                  <CodePreview />
                 </ProtectRoute>
-              }/>  
-              <Route path='*' element={
+              }
+            />
+            <Route
+              path="/features"
+              element={
+                <FeaturesPage />
+              }
+            />
+            <Route
+              path="*"
+              element={
                 <ProtectRoute>
-                  <NotFound/>
+                  <NotFound />
                 </ProtectRoute>
-              }/>  
-            </Routes>
-          </AuthProvider>
-        </Router>
+              }
+            />
+          </Routes>
+        </AuthProvider>
+      </Router>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import AuthContext from "../../Contexts/AuthContext.jsx";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -47,7 +47,7 @@ function Navbar() {
               Home
             </a>
           )}
-          <a href="#features" className="nav-item">
+          <a href="/features" className="nav-item">
             Features
           </a>
           <a href="#resources" className="nav-item">

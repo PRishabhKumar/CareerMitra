@@ -19,11 +19,34 @@ function CodePreview() {
   const [loading, setLoading] = useState(false);
   const [pdfURL, setPdfURL] = useState("");
   const [status, setStatus] = useState("");
+  const [instructions, setInstructions] = useState("");
+  const [editorLoading, setEditorLoading] = useState(false);
 
   const handleChatting = async () => {
-    console.log(
-      "Button was clicked and the handle chatting function was invoked",
-    );
+    try {
+      
+      const token = localStorage.getItem("token");
+      setEditorLoading(true);
+      const response = await axios.post(
+        `${server}/api/v1/users/refineDocument`,
+        {
+          latexCode,
+          instructions,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      setInstructions("")
+      setCode(response.data.code);
+      setEditorLoading(false);
+    } catch (error) {
+      console.log("This error occured in chatting with Gemini..." + error);
+      setError("Some error occured....");
+      setEditorLoading(false);
+    }
   };
 
   const handleCompilation = async () => {
@@ -120,13 +143,26 @@ function CodePreview() {
               <div className="column-badge">Source</div>
             </div>
             <div className="code-display-container">
-              <textarea
-                className="code-editor"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                spellCheck="false"
-                placeholder="Enter LaTeX code here..."
-              />
+              <div className="editor-wrapper">
+                {editorLoading && (
+                  <div className="editor-loading-overlay">
+                    <div className="ai-loader-container">
+                      <div className="ai-loader-ring"></div>
+                      <div className="ai-loader-core"></div>
+                    </div>
+                    <p className="ai-loading-text">
+                      AI is refining your code...
+                    </p>
+                  </div>
+                )}
+                <textarea
+                  className="code-editor"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  spellCheck="false"
+                  placeholder="Enter LaTeX code here..."
+                />
+              </div>
             </div>
             <div className="compile-btn-container">
               <FlowButton text="Compile Code" onClick={handleCompilation} />
@@ -181,6 +217,9 @@ function CodePreview() {
         <div className="chat-footer-section">
           <div className="chat-input-wrapper">
             <textarea
+              onChange={(e) => {
+                setInstructions(e.target.value);
+              }}
               name="chat"
               id="char"
               rows="10"

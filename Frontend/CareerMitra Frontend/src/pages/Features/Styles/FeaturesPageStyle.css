@@ -1,0 +1,260 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap");
+
+/* =========================================
+   Variables & Theme: Slate & Gold (Brand Aligned)
+   ========================================= */
+:root {
+  --bg-dark: #0f172a;      /* Slate 900 */
+  --bg-darker: #020617;    /* Slate 950 */
+  
+  --gold-primary: #d4af37;
+  --gold-glow: rgba(212, 175, 55, 0.4);
+  
+  --text-main: #f8fafc;    /* Slate 50 */
+  --text-muted: #94a3b8;   /* Slate 400 */
+  
+  --glass-bg: rgba(30, 41, 59, 0.4); /* Consistent Dark Slate Glass */
+  --glass-border: rgba(255, 255, 255, 0.08);
+  
+  --card-radius: 16px;
+  --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* =========================================
+   Page Layout & Background
+   ========================================= */
+.features-page {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  overflow-x: hidden;
+  font-family: "Outfit", sans-serif;
+  padding: 100px 24px;
+}
+
+/* Standardized Brand Background */
+.features-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg-dark) 60%);
+}
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.3;
+  mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+}
+
+.top-glow {
+  position: absolute;
+  top: -10%;
+  right: -5%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.1) 0%,
+    transparent 70%
+  );
+  filter: blur(80px);
+  animation: pulseGlow 8s infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(1); opacity: 0.3; }
+  100% { transform: scale(1.1); opacity: 0.5; }
+}
+
+/* =========================================
+   Hero Section
+   ========================================= */
+.features-hero {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 80px;
+  position: relative;
+  z-index: 2;
+  animation: slideUpFade 0.8s var(--transition-smooth);
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  color: var(--text-main);
+}
+
+.highlight-text {
+  color: var(--gold-primary);
+  text-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+  font-family: "Cinzel", serif; /* Fallback to Outfit if not imported, but matches brand text-gold class */
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 auto;
+  font-weight: 300;
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   Bento Grid Layout
+   ========================================= */
+.features-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.features-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+/* =========================================
+   Feature Card (Matches Landing Page Style)
+   ========================================= */
+.feature-card {
+  position: relative;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  border-radius: var(--card-radius);
+  padding: 2.5rem;
+  transition: all 0.4s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 320px;
+}
+
+.feature-card.large {
+  grid-column: span 2;
+}
+
+/* Hover Effect: Lift + Gold Border + Shadow */
+.feature-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--gold-primary);
+  background: rgba(30, 41, 59, 0.7); /* Slightly lighter slate */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Shimmer Sweep Animation */
+.feature-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.03),
+    transparent
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+
+.feature-card:hover::before {
+  transform: translateX(100%);
+}
+
+/* Icon Styling */
+.card-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.05); /* Subtle white tint */
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  color: var(--gold-primary); /* Default Gold Icon */
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover .card-icon-wrapper {
+  background: var(--gold-primary);
+  color: #020617; /* Dark text on gold bg */
+  transform: scale(1.05);
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.8rem;
+}
+
+.card-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Staggered Entry using CSS variables if set, else fallback */
+.feature-card {
+  opacity: 0;
+  animation: cardEntry 0.8s var(--transition-smooth) forwards;
+}
+
+.feature-card:nth-child(1) { animation-delay: 0.1s; }
+.feature-card:nth-child(2) { animation-delay: 0.2s; }
+.feature-card:nth-child(3) { animation-delay: 0.3s; }
+.feature-card:nth-child(4) { animation-delay: 0.4s; }
+.feature-card:nth-child(5) { animation-delay: 0.5s; }
+.feature-card:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes cardEntry {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   Responsive
+   ========================================= */
+@media (max-width: 1024px) {
+  .features-bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 3rem;
+  }
+  .features-bento-grid {
+    grid-template-columns: 1fr;
+  }
+  .feature-card.large {
+    grid-column: span 1;
+  }
+  .feature-card {
+    height: auto;
+    min-height: 280px;
+  }
+}

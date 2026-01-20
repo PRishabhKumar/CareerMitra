@@ -26,10 +26,10 @@ const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const skillsDictionaryPath = path.join(
   process.cwd(),
   "Utilities",
-  "skills.json"
+  "skills.json",
 );
 const skillsDictionary = JSON.parse(
-  fs.readFileSync(skillsDictionaryPath, "utf8")
+  fs.readFileSync(skillsDictionaryPath, "utf8"),
 );
 
 console.log("Skills dictionary imported successfully");
@@ -143,7 +143,7 @@ export async function extractTextFromOCR(pdfBuffer) {
 
   await new Promise((resolve, reject) => {
     exec(`pdftoppm -png "${pdfPath}" "${imagePrefix}"`, (err) =>
-      err ? reject(err) : resolve()
+      err ? reject(err) : resolve(),
     );
   });
 
@@ -281,8 +281,8 @@ function extractJDKeywords(jd) {
     new Set(
       normalizeText(jd)
         .split(" ")
-        .filter((w) => w.length > 3)
-    )
+        .filter((w) => w.length > 3),
+    ),
   );
 }
 
@@ -356,7 +356,7 @@ const handleResumeUpload = async (req, res) => {
         (error, result) => {
           if (error) reject(error);
           else resolve(result);
-        }
+        },
       );
       stream.end(pdfBuffer);
     });
@@ -436,7 +436,7 @@ const geminiSetup = async (prompt) => {
   } catch (error) {
     console.log(
       "This error occured in the fetching the response from Gemini : ",
-      error
+      error,
     );
     return "ERROR";
   }
@@ -575,7 +575,7 @@ const handleLatexCompilation = async (req, res) => {
         const fs = require("fs");
         const errorLog = fs.readFileSync(
           process.cwd() + "/latex-compilation-errors.log",
-          "utf8"
+          "utf8",
         );
         console.error("LaTeX Error Log:", errorLog);
       } catch (logError) {
@@ -609,6 +609,57 @@ const handleLatexCompilation = async (req, res) => {
   }
 };
 
+// ========================================== Further chatting with AI ==========================================
+
+const handleChatting = async (req, res) => {
+  try {
+    const { latexCode, instructions } = req.body;
+    const prompt = `${process.env.CHATTING_PROMPT}
+
+    ===== EXISTING LATEX CODE (DO NOT MODIFY UNLESS INSTRUCTED) =====
+    ${latexCode}
+    ===== END OF EXISTING CODE =====
+
+    ===== USER INSTRUCTION (APPLY THIS CHANGE ONLY) =====
+    ${instructions}
+    ===== END OF INSTRUCTION =====
+
+    FINAL REMINDER: Return the FULL CODE document. Do not just return the changed lines. Do not return markdown.`;
+
+    let response = await geminiSetup(prompt);
+    if (response === "ERROR") {
+      return res
+        .status(500)
+        .json({
+          message:
+            "There was some error in getting the code from AI. Please try again later",
+        });
+    }
+
+    // Clean up the response
+    response = response.trim();
+    if (response.startsWith("```latex") || response.startsWith("```")) {
+      response = response
+        .replace(/^```latex\s*/i, "")
+        .replace(/^```\s*/i, "")
+        .replace(/\s*```\s*$/i, "");
+    }
+
+    return res.status(httpStatus.OK).json({
+      message: "Refined code fetched successfully....",
+      code: response,
+    });
+  } catch (error) {
+    console.log("Error in handleChatting:", error);
+    return res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({
+        message:
+          "There was some internal server error on our side. Please try again after some time...",
+      });
+  }
+};
+
 export {
   register,
   login,
@@ -617,4 +668,5 @@ export {
   handleAIAnalysis,
   handleAICodeGeneration,
   handleLatexCompilation,
+  handleChatting,
 };
