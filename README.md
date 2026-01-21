@@ -33,7 +33,8 @@ CareerMitra is a powerful, full-stack application designed to help job seekers o
 - **Database**: MongoDB (Mongoose)
 - **AI/ML**: Google Generative AI (Gemini)
 - **File Handling**: Multer, Cloudinary
-- **PDF/Text**: `pdf-parse`, `pdf-lib`, `tesseract.js`, `latex.js`
+- **PDF/Text**: `pdf-parse`, `pdf-lib`, `tesseract.js`
+- **Compiler**: MikTex (Local In-built) - Used for high-speed, zero-cost LaTeX compilation.
 - **Security**: BCrypt, JSON Web Token (JWT)
 
 ---
@@ -61,6 +62,7 @@ Follow these instructions to set up the project locally.
 - Node.js (v18+)
 - MongoDB (Local or Atlas URL)
 - Valid API Keys (Gemini, Cloudinary)
+- **MikTex**: You MUST install MikTex for local PDF compilation. This ensures fastest responses and no API costs.
 
 ### 1. Clone the Repository
 
@@ -148,6 +150,13 @@ npm run dev
 ```
 
 Visit `http://localhost:5173` (or the port shown in your terminal) to view the app!
+
+---
+
+## Important Notes
+
+- **MikTex Requirement**: Since this project uses a local **MikTex** compiler, it eliminates 3rd-party API costs for PDF generation and ensures the fastest possible performance. **You must download and install MikTex** on your machine for the resume generation features to work.
+- **AI API Stability**: You might occasionally face errors from the AI service (Gemini) due to high traffic or model overload. Please note that these are external service issues and **not faults in the code**.
 
 ---
 
