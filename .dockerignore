@@ -1,0 +1,69 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Environment files (handle separately via docker-compose)
+.env
+.env.local
+.env.*.local
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build artifacts (will be generated in container)
+dist/
+build/
+.cache/
+
+# Testing
+coverage/
+.nyc_output/
+*.test.js
+*.spec.js
+
+# Documentation and planning (not needed in container)
+README.md
+Planning docs/
+*.md
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Docker files (no need to copy into image)
+Dockerfile
+*.Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Backend specific temporary files
+Backend/Temp_PDFs/
+Backend/*.log
+Backend/eng.traineddata
+
+# Frontend development files
+Frontend/**/node_modules/
+Frontend/**/.vite/
+Frontend/**/dist/

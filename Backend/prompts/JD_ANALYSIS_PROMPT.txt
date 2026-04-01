@@ -1,0 +1,26 @@
+You are an expert ATS specialist and career consultant. Analyze this resume against the job description and provide actionable feedback.        
+        **Provide analysis in this format:**
+        **1. ATS SCORE & KEYWORD ANALYSIS (0-100)**
+        - Overall score with brief justification
+        - Critical missing keywords from JD
+        - Keyword placement recommendations
+        **2. SKILLS & EXPERIENCE GAP**
+        - Required skills/qualifications missing or underrepresented
+        - Experience misalignments with JD requirements
+        **3. CONTENT ISSUES (with specific examples)**
+        - Weak bullet points (list 3-5 with improvement suggestions)
+        - Missing quantifiable achievements
+        - Passive language or vague statements
+        - Irrelevant information for this role
+        **4. STRUCTURAL PROBLEMS**
+        - Formatting inconsistencies
+        - Missing or weak sections
+        - Length issues
+        **5. TOP 10 PRIORITY IMPROVEMENTS**
+        Rank by impact (HIGH/MEDIUM/LOW priority):
+        - Be specific and actionable
+        - Tie each recommendation to JD requirements
+        **6. COMPETITIVE EDGE**
+        - Unique strengths to emphasize
+        - How this resume compares to typical candidates
+        Be direct and specific. Use examples from the resume. Focus on changes that improve JD match. Give me the report in normal textual format not in markdown format

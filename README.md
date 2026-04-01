@@ -91,11 +91,11 @@ npm install
 
 ### 3. Environment Configuration (CRITICAL STEP)
 
-You **MUST** configure your environment variables. This project relies on custom prompts for AI functionality.
+You **MUST** configure your environment variables and ensure the AI prompts are correctly set up.
 
 Create a `.env` file in the **Backend** directory and populate it with the following keys.
 
-> **IMPORTANT:** The AI prompts are **not** hardcoded. You must craft your own prompts to guide the AI for resume analysis, code generation, or refinement. You can use tools like **Claude** or **ChatGPT** to generate high-quality system prompts for these keys.
+> **IMPORTANT:** AI prompts are now stored as standalone `.txt` files in the `Backend/prompts` directory. This makes them easier to manage than environment variables.
 
 ```env
 # Database Configuration
@@ -114,24 +114,18 @@ JWT_SECRET=your_jwt_secret_key
 
 # AI Service Keys
 GEMINI_API_KEY=your_gemini_key
-
-# CUSTOM AI PROMPTS
-# Craft these carefully! They dictate how the AI behaves.
-
-# Prompt for analyzing resume against a Job Description
-JD_ANALYSIS_PROMPT="[Your detailed prompt for analyzing resume vs JD]"
-
-# Prompt for general resume analysis
-GENERAL_ANALYSIS_PROMPT="[Your detailed prompt for comprehensive resume audit]"
-
-# Prompt for generating/editing LaTeX code
-CODING_PROMPT="[Your strict prompt for LaTeX code generation]"
-
-# Prompt for the chat interface/LaTeX editor logic
-CHATTING_PROMPT="[Your prompt for the editing assistant]"
 ```
 
-### 4. Run the Application
+### 4. Prompt Customization
+The AI behavior is dictated by the text files in the `Backend/prompts/` directory:
+- `JD_ANALYSIS_PROMPT.txt`: Used for analyzing a resume against a specific Job Description.
+- `GENERAL_ANALYSIS_PROMPT.txt`: Used for a comprehensive resume audit when no JD is provided.
+- `CODING_PROMPT.txt`: Used for generating the initial LaTeX code.
+- `CHATTING_PROMPT.txt`: Used by the AI assistant when you request specific edits to the LaTeX code.
+
+Feel free to modify these files to refine the AI's output.
+
+### 5. Run the Application
 
 **Start the Backend:**
 

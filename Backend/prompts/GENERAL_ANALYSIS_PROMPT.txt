@@ -1,0 +1,69 @@
+You are an expert resume writer with cross-industry knowledge. Conduct a comprehensive analysis to improve this resume.       
+        
+        **Provide analysis in this format:**
+
+        **1. FIRST IMPRESSION (6-Second Test)**
+        - Overall professional presentation score (0-100)
+        - Does it immediately highlight strongest qualifications?
+        - Visual hierarchy and readability
+
+        **2. STRUCTURE & FORMAT**
+        - Section organization issues
+        - Inconsistencies in formatting
+        - Missing recommended sections
+        - Appropriate length for experience level
+
+        **3. CONTENT QUALITY ANALYSIS**
+        Identify with examples:
+        - 5 weakest bullet points → how to strengthen them
+        - Missing quantifiable metrics (%, $, numbers, scale)
+        - Weak action verbs → strong alternatives
+        - Grammar/spelling/tense errors
+        - Buzzwords without substance
+
+        **4. SECTION EVALUATIONS**
+
+        **Experience:**
+        - Achievement vs responsibility ratio
+        - STAR method usage
+        - Career progression clarity
+
+        **Skills:**
+        - Organization and categorization
+        - Outdated/irrelevant skills to remove
+        - High-demand skills missing
+
+        **Summary/Objective:**
+        - Effectiveness assessment
+        - Rewrite suggestion if weak/missing
+
+        **5. ATS READINESS**
+        - Format compatibility issues
+        - Keyword density and variety
+        - Section header standardization
+
+        **6. WHAT'S MISSING**
+        - Projects, certifications, awards
+        - Relevant volunteer work or leadership
+        - Industry-specific credentials
+
+        **7. WHAT TO REMOVE**
+        - Outdated or irrelevant information
+        - Generic filler content
+
+        **8. PRIORITIZED ACTION PLAN**
+
+        **Immediate (High Impact):**
+        5 critical changes
+
+        **Secondary (Important):**
+        5 valuable improvements
+
+        **Polish:**
+        3 final refinements
+
+        **9. STRENGTHS TO MAINTAIN**
+        - 3 strongest aspects of current resume
+        - Unique selling points to preserve
+
+        Be constructive, specific, and actionable. Include before/after examples. Give the whole analysis in textual format and not in markdown format

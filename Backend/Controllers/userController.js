@@ -18,13 +18,18 @@ import cloudinary from "../config/cloudinaryConfig.js";
 import latex from "node-latex";
 import { Readable } from "stream";
 import OpenAI from "openai";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const backendRoot = path.join(__dirname, "..");
 
 const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // ========================================== SKILS DICTIONARY ==========================================
 
 const skillsDictionaryPath = path.join(
-  process.cwd(),
+  backendRoot,
   "Utilities",
   "skills.json",
 );
@@ -33,6 +38,29 @@ const skillsDictionary = JSON.parse(
 );
 
 console.log("Skills dictionary imported successfully");
+
+// ========================================== PROMPT LOADING ==========================================
+
+const getPrompt = (promptName) => {
+  const promptPath = path.join(
+    backendRoot,
+    "prompts",
+    `${promptName}.txt`,
+  );
+  try {
+    return fs.readFileSync(promptPath, "utf8");
+  } catch (error) {
+    console.error(`Error reading prompt file ${promptName}:`, error);
+    return "";
+  }
+};
+
+const JD_ANALYSIS_PROMPT = getPrompt("JD_ANALYSIS_PROMPT");
+const GENERAL_ANALYSIS_PROMPT = getPrompt("GENERAL_ANALYSIS_PROMPT");
+const CODING_PROMPT = getPrompt("CODING_PROMPT");
+const CHATTING_PROMPT = getPrompt("CHATTING_PROMPT");
+
+console.log("Prompts loaded successfully from text files");
 
 // ========================================== AUTH CONTROLLERS ===========================================
 
@@ -129,7 +157,7 @@ export async function extractTextFromPDF(pdfBuffer) {
 
 export async function extractTextFromOCR(pdfBuffer) {
   const timestamp = Date.now();
-  const baseTempDir = path.join(process.cwd(), "Backend", "Temp");
+  const baseTempDir = path.join(backendRoot, "Temp");
   const pdfDir = path.join(baseTempDir, "pdfs");
   const imgDir = path.join(baseTempDir, "images");
 
@@ -459,11 +487,11 @@ const handleAIAnalysis = async (req, res) => {
     let prompt = ``;
     if (JD) {
       prompt =
-        process.env.JD_ANALYSIS_PROMPT +
+        JD_ANALYSIS_PROMPT +
         ` Here is the resume: ${extractedText} and here is the JD: ${JD}`;
     } else {
       prompt =
-        process.env.GENERAL_ANALYSIS_PROMPT +
+        GENERAL_ANALYSIS_PROMPT +
         ` Here is the resume: ${extractedText}`;
     }
 
@@ -502,7 +530,7 @@ const handleAICodeGeneration = async (req, res) => {
     }
 
     let codingPrompt =
-      process.env.CODING_PROMPT +
+      CODING_PROMPT +
       `${
         JD ? ` Optimize it for this job description: ${JD}` : ""
       } Resume content: ${extractedText}`;
@@ -549,6 +577,10 @@ const handleLatexCompilation = async (req, res) => {
     }
     latexCode = latexCode.trim();
 
+    // Fix unescaped ampersands to prevent LaTeX compilation errors ("Misplaced alignment tab character &")
+    // (This regex finds any '&' that does not have a backslash '\' right before it)
+    latexCode = latexCode.replace(/(?<!\\)&/g, '\\&');
+
     // Create readable stream
     // const input = Readable.from([latexCode]);
 
@@ -556,7 +588,7 @@ const handleLatexCompilation = async (req, res) => {
     const pdf = latex(latexCode, {
       cmd: "pdflatex",
       passes: 2,
-      errorLogs: process.cwd() + "/latex-compilation-errors.log",
+      errorLogs: path.join(backendRoot, "latex-compilation-errors.log"),
     });
 
     // Set headers
@@ -574,7 +606,7 @@ const handleLatexCompilation = async (req, res) => {
       try {
         const fs = require("fs");
         const errorLog = fs.readFileSync(
-          process.cwd() + "/latex-compilation-errors.log",
+          path.join(backendRoot, "latex-compilation-errors.log"),
           "utf8",
         );
         console.error("LaTeX Error Log:", errorLog);
@@ -614,7 +646,7 @@ const handleLatexCompilation = async (req, res) => {
 const handleChatting = async (req, res) => {
   try {
     const { latexCode, instructions } = req.body;
-    const prompt = `${process.env.CHATTING_PROMPT}
+    const prompt = `${CHATTING_PROMPT}
 
     ===== EXISTING LATEX CODE (DO NOT MODIFY UNLESS INSTRUCTED) =====
     ${latexCode}
