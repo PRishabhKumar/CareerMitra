@@ -22,7 +22,7 @@ RUN npm install
 # Copy backend source code
 COPY ./Backend ./
 
-EXPOSE 5000
+EXPOSE 3000
 
 # Start using the start.js entrypoint
 CMD ["node", "start.js"]
