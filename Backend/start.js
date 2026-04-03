@@ -2,7 +2,7 @@ import dotenv from "dotenv"
 import path from "path"
 
 // load .env before importing anything that reads process.env
-dotenv.config({ path: path.resolve("../.env") })
+dotenv.config() // By default, this looks for .env in the same folder as the script
 
 // now import the app so all modules see the env vars
 await import("./app.js")
