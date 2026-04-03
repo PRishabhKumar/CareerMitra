@@ -5,6 +5,7 @@ import Navbar from "../Home/Navbar";
 import Loader from "../Home/Loader";
 import "./Styles/AnalysisStyle.css";
 import { useNavigate } from "react-router-dom";
+import server from "../../environment.js";
 
 function Analysis() {
   const router = useNavigate();
@@ -27,9 +28,9 @@ function Analysis() {
 
       const token = localStorage.getItem("token");
 
-      // Using port 3000 to match Home.jsx configuration
+      // Using server URL from environment configuration
       const res = await axios.post(
-        "http://localhost:3000/api/v1/users/analyze",
+        `${server}/api/v1/users/analyze`,
         {
           extractedText,
           JD,

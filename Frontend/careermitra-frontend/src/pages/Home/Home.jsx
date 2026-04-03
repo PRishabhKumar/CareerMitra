@@ -5,6 +5,7 @@ import axios from "axios"
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 import Loader from "./Loader.jsx";
+import server from "../../environment.js";
 function Home() {
   const router = useNavigate();
   const [file, setFile] = useState(null);
@@ -65,7 +66,7 @@ function Home() {
       setMessage("Uploading...");
       setLoading(true);
       const res = await axios.post(
-        "http://localhost:3000/api/v1/users/upload-resume",
+        `${server}/api/v1/users/upload-resume`,
         formData,
         {
           headers: {

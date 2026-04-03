@@ -3,6 +3,7 @@ import "./Styles/resultsStyle.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import server from "../../environment.js";
 function Results() {
   const router = useNavigate(); // Changed from navigate to router to match Home.jsx variable name if preferred, or just useNavigate
   const location = useLocation();
@@ -40,7 +41,7 @@ function Results() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        `http://localhost:3000/api/v1/users/resumeResults/${resumeID}`,
+        `${server}/api/v1/users/resumeResults/${resumeID}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
