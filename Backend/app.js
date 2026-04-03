@@ -6,7 +6,10 @@ import mongoose from "mongoose"
 import cors from "cors"
 import userRoutes from "./Routes/UserRoutes.js"
 const app = express();
-app.use(cors())
+app.use(cors({
+    origin: "http://52.66.182.154:5173", // Allow connections from EC2 instance frontend
+    credentials: true
+}));
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
