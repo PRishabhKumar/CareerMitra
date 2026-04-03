@@ -1,3 +1,3 @@
 let prod = false
-const server = prod ? "backend_deployed_link_here" : "http://localhost:3000"
+const server = prod ? "http://52.66.182.154:3000" : "http://localhost:3000"
 export default server
