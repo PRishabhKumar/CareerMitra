@@ -6,9 +6,27 @@ import mongoose from "mongoose"
 import cors from "cors"
 import userRoutes from "./Routes/UserRoutes.js"
 const app = express();
+const allowedOrigins = [
+    "http://52.66.182.154:5173",            // Local/Old dev IP
+    "https://d2hzohjrs1tfem.cloudfront.net", // CloudFront (needs https://)
+    "https://careermitra.dev",               // Main Domain
+    "https://www.careermitra.dev"            // WWW Domain
+];
+
 app.use(cors({
-    origin: "http://52.66.182.154:5173", // Allow connections from EC2 instance frontend
-    credentials: true
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
