@@ -1,4 +1,4 @@
-# 🚀 CareerMitra: Your Intelligent Career Orchestrator
+# CareerMitra: Your Intelligent Career Orchestrator
 
 [![Production Live](https://img.shields.io/badge/Live-careermitra.dev-00f2ff?style=for-the-badge&logo=amazonaws)](https://careermitra.dev)
 [![Docker Hub](https://img.shields.io/badge/Docker-Hub-blue?style=for-the-badge&logo=docker)](https://hub.docker.com/u/prishabhkumar)
