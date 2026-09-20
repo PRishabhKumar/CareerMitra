@@ -26,6 +26,7 @@
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
     "node-latex": "^3.1.0",
+    "nodemailer": "^10.0.9",
     "openai": "^6.16.0",
     "path": "^0.12.7",
     "pdf-lib": "^1.17.1",

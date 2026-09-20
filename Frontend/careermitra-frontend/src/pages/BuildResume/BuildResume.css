@@ -1,0 +1,404 @@
+/* Based on AuthStyle.css Theme */
+
+.build-resume-container {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  padding-top: 140px; /* Offset for navbar */
+  padding-bottom: 80px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-family: "Outfit", sans-serif;
+  background-color: #020617;
+  color: #f8fafc;
+}
+
+/* Background: "Starless Night" matching Auth */
+.build-resume-container .bg-gradient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at 50% -20%, #1e293b 0%, #020617 60%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.build-resume-container .bg-gradient::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+  opacity: 0.5;
+}
+
+/* The form card */
+.build-resume-container .form-wrapper {
+  background: #0f172a;
+  border-radius: 4px;
+  padding: 3rem 4rem;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  z-index: 2;
+  position: relative;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05),
+    20px 20px 0px rgba(212, 175, 55, 0.1);
+}
+
+.build-resume-container .form-wrapper::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 40px;
+  height: 40px;
+  border-top: 2px solid #d4af37;
+  border-right: 2px solid #d4af37;
+  z-index: 1;
+}
+
+.build-resume-container .build-back-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+  padding: 0.55rem 1.25rem;
+  border-radius: 8px;
+  font-family: "Outfit", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.build-resume-container .build-back-button .back-arrow-icon {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  stroke: #94a3b8;
+}
+
+.build-resume-container .build-back-button span {
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.build-resume-container .build-back-button .back-btn-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 175, 55, 0.25),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: 0.6s ease;
+  pointer-events: none;
+}
+
+.build-resume-container .build-back-button:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: #d4af37;
+  color: #d4af37;
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.25), inset 0 0 10px rgba(212, 175, 55, 0.05);
+}
+
+.build-resume-container .build-back-button:hover .back-arrow-icon {
+  transform: translateX(-4px);
+  stroke: #d4af37;
+}
+
+.build-resume-container .build-back-button:hover span {
+  color: #fff;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+.build-resume-container .build-back-button:hover .back-btn-shine {
+  left: 200%;
+}
+
+.build-resume-container .build-back-button:active {
+  transform: translateY(0);
+}
+
+.build-resume-container .form-header {
+  text-align: left;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.build-resume-container .form-header h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 0.5rem;
+}
+
+.build-resume-container .form-header p {
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.build-resume-container .build-resume-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.build-resume-container .section-block h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #d4af37;
+  margin-bottom: 1.25rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.build-resume-container .section-header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.build-resume-container .section-header-flex h3 {
+  margin-bottom: 0;
+}
+
+.build-resume-container .icon-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
+  font-family: "Outfit", sans-serif;
+}
+
+.build-resume-container .add-btn {
+  color: #34d399;
+}
+.build-resume-container .add-btn:hover {
+  color: #10b981;
+}
+
+.build-resume-container .remove-btn {
+  color: #f87171;
+}
+.build-resume-container .remove-btn:hover {
+  color: #ef4444;
+}
+
+.build-resume-container .dynamic-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.build-resume-container .dynamic-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.build-resume-container .dynamic-card-header h4 {
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.build-resume-container .grid-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.build-resume-container .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.build-resume-container .form-group label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.build-resume-container .form-input, 
+.build-resume-container .form-group textarea {
+  width: 100%;
+  padding: 10px 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid #334155;
+  border-radius: 2px;
+  font-size: 1rem;
+  color: #f8fafc;
+  transition: all 0.3s ease;
+  outline: none;
+  font-family: "Outfit", sans-serif;
+}
+
+.build-resume-container .form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.build-resume-container .form-input::placeholder, 
+.build-resume-container .form-group textarea::placeholder {
+  color: #334155;
+  font-weight: 300;
+}
+
+.build-resume-container .form-input:focus, 
+.build-resume-container .form-group textarea:focus {
+  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.02);
+}
+
+.build-resume-container .submit-btn {
+  width: 100%;
+  padding: 1rem;
+  background: transparent;
+  border: 1px solid #d4af37;
+  border-radius: 2px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #d4af37;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: "Outfit", sans-serif;
+}
+
+.build-resume-container .submit-btn:hover:not(:disabled) {
+  background: #d4af37;
+  color: #0f172a;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+}
+
+.build-resume-container .submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.build-resume-container .btn-arrow {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.build-resume-container .submit-btn:hover .btn-arrow {
+  transform: translateX(5px);
+}
+
+.build-resume-container .alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.build-resume-container .alert-error {
+  color: #f87171;
+  border-left: 3px solid #f87171;
+}
+
+.build-resume-container .loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  gap: 20px;
+}
+
+.build-resume-container .loader {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(212, 175, 55, 0.2);
+  border-top-color: #d4af37;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.build-resume-container .loading-container p {
+  color: #d4af37;
+  font-size: 1.1rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.build-resume-container .animate-up {
+  animation: slideInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-2-col {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-wrapper {
+    padding: 1.5rem;
+  }
+}

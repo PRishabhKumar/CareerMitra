@@ -19,9 +19,11 @@ function CodePage() {
   }, []);
 
   const getCode = async () => {
-    // If no text, maybe don't call? Or let backend handle it.
     if (!extractedText) {
-      // Optional: might want to handle missing data case, but for now proceeding.
+      setCode("");
+      setMessage("Start editing your LaTeX code or launch the live preview...");
+      setLoading(false);
+      return;
     }
 
     setLoading(true);

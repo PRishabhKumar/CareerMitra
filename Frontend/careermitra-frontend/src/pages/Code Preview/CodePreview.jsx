@@ -82,35 +82,78 @@ function CodePreview() {
     link.click(); // click the anchor tag to trigger it
   };
 
-  const handleClose = () => {
-    URL.revokeObjectURL(pdfURL);
-    navigator(-1);
+  const handleBack = () => {
+    if (pdfURL) {
+      URL.revokeObjectURL(pdfURL);
+    }
+    if (window.history.length > 1) {
+      navigator(-1);
+    } else {
+      navigator("/home");
+    }
   };
+
+  const handleClose = () => {
+    handleBack();
+  };
+
   return (
     <div className="latex-preview-page">
       <div className="latex-preview-container">
         <div className="latex-preview-header">
-          <div className="header-title-group">
-            <div className="header-icon-wrapper">
+          <div className="header-left-group">
+            <button
+              type="button"
+              onClick={() => {
+                if (window.history.length > 1) {
+                  navigator(-1);
+                } else {
+                  navigator("/home");
+                }
+              }}
+              className="preview-back-button"
+              title="Go Back"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="18"
+                height="18"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                className="back-arrow-icon"
               >
-                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                <polyline points="14 2 14 8 20 8" />
-                <path d="M16 13H8" />
-                <path d="M16 17H8" />
-                <path d="M10 9H8" />
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
               </svg>
+              <span>Back</span>
+              <div className="back-btn-shine"></div>
+            </button>
+            <div className="header-title-group">
+              <div className="header-icon-wrapper">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <path d="M16 13H8" />
+                  <path d="M16 17H8" />
+                  <path d="M10 9H8" />
+                </svg>
+              </div>
+              <h2>LaTeX Code & Preview</h2>
             </div>
-            <h2>LaTeX Code & Preview</h2>
           </div>
           <button
             className="close-btn"

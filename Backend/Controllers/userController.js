@@ -59,6 +59,9 @@ const JD_ANALYSIS_PROMPT = getPrompt("JD_ANALYSIS_PROMPT");
 const GENERAL_ANALYSIS_PROMPT = getPrompt("GENERAL_ANALYSIS_PROMPT");
 const CODING_PROMPT = getPrompt("CODING_PROMPT");
 const CHATTING_PROMPT = getPrompt("CHATTING_PROMPT");
+const BUILD_RESUME_PROMPT = getPrompt("BUILD_RESUME_PROMPT");
+
+import { sendResetPasswordEmail } from "../Utilities/emailService.js";
 
 console.log("Prompts loaded successfully from text files");
 
@@ -118,6 +121,65 @@ const login = async (req, res) => {
     res
       .status(httpStatus.INTERNAL_SERVER_ERROR)
       .json({ message: "Login failed" });
+  }
+};
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { emailID } = req.body;
+    const user = await UserModel.findOne({ emailID });
+
+    if (!user) {
+      return res.status(404).json({ message: "No account found with this email" });
+    }
+
+    const token = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour expiration
+    await user.save();
+
+    // Ensure frontend port/origin is correct depending on dev/prod. 
+    // Usually it is better to take this from an env variable but for now we hardcode local or use origin header.
+    const origin = req.headers.origin || "http://localhost:5173";
+    const resetUrl = `${origin}/reset-password/${token}`;
+
+    // Dispatch email asynchronously in background so client receives an immediate response
+    sendResetPasswordEmail(user.emailID, resetUrl).catch((err) => {
+      console.error("[EmailService] Background password reset email failed:", err);
+    });
+
+    res.json({ message: "Password reset link sent to your email." });
+  } catch (error) {
+    console.error("Error in forgotPassword:", error);
+    res.status(500).json({ message: "Failed to process password reset." });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    const user = await UserModel.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Password reset token is invalid or has expired." });
+    }
+
+    user.password = await bcrypt.hash(password, 10);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ message: "Password has been reset successfully." });
+  } catch (error) {
+    console.error("Error in resetPassword:", error);
+    res.status(500).json({ message: "Failed to reset password." });
   }
 };
 
@@ -554,7 +616,99 @@ const handleAICodeGeneration = async (req, res) => {
   }
 };
 
+const handleBuildResume = async (req, res) => {
+  try {
+    const { personalInfo, otherLinks, education, experience, skills, projects, templateId } = req.body;
+
+    const resumeData = {
+      personalInfo: personalInfo || "",
+      otherLinks: otherLinks || "",
+      education: education || "",
+      experience: experience || "",
+      skills: skills || "",
+      projects: projects || ""
+    };
+
+    let templatePrompt = BUILD_RESUME_PROMPT;
+    if (templateId) {
+      const templateMap = {
+        "modern-classic": "modern_classic",
+        "tech-minimalist": "tech_minimalist",
+        "harvard-executive": "harvard_executive",
+        "modern-sidebar": "modern_sidebar"
+      };
+      const filename = templateMap[templateId];
+      if (filename) {
+        const promptPath = path.join(backendRoot, "prompts", "templates", `${filename}.txt`);
+        try {
+          templatePrompt = fs.readFileSync(promptPath, "utf8");
+        } catch (error) {
+          console.error(`Error reading template prompt ${filename}:`, error);
+        }
+      }
+    }
+
+    const buildPrompt = 
+      templatePrompt + 
+      `\nHere is the resume data in JSON format:\n${JSON.stringify(resumeData, null, 2)}`;
+
+    console.log("Generating custom resume with Gemini...");
+    let code = await geminiSetup(buildPrompt);
+
+    if (code === "ERROR") {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Failed to build resume from AI",
+      });
+    }
+
+    return res
+      .status(httpStatus.OK)
+      .json({ message: "Resume built successfully...", code: code });
+  } catch (error) {
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      message: "There was an internal server error while building the resume",
+    });
+  }
+};
+
 // ========================================== Latex code compilation ==========================================
+
+const cleanupFiles = (files) => {
+  files.forEach(file => {
+    try {
+      if (fs.existsSync(file)) {
+        fs.unlinkSync(file);
+      }
+    } catch (e) {
+      console.error(`Failed to delete temp file ${file}:`, e.message);
+    }
+  });
+};
+
+const handleCompileError = (jobId, err, res) => {
+  const logFile = path.join(backendRoot, "Temp_PDFs", `${jobId}.log`);
+  let logContent = "";
+  if (fs.existsSync(logFile)) {
+    logContent = fs.readFileSync(logFile, "utf8");
+    fs.writeFileSync(path.join(backendRoot, "latex-compilation-errors.log"), logContent, "utf8");
+  }
+  console.error("LaTeX Compilation Error Log:\n", logContent || err.message);
+  
+  if (!res.headersSent) {
+    res.status(500).json({
+      message: "LaTeX compilation failed",
+      error: err.message,
+      log: logContent ? logContent.substring(logContent.length - 1000) : ""
+    });
+  }
+  
+  cleanupFiles([
+    path.join(backendRoot, "Temp_PDFs", `${jobId}.tex`),
+    path.join(backendRoot, "Temp_PDFs", `${jobId}.log`),
+    path.join(backendRoot, "Temp_PDFs", `${jobId}.aux`),
+    path.join(backendRoot, "Temp_PDFs", `${jobId}.out`)
+  ]);
+};
 
 const handleLatexCompilation = async (req, res) => {
   let { latexCode } = req.body;
@@ -578,57 +732,89 @@ const handleLatexCompilation = async (req, res) => {
     latexCode = latexCode.trim();
 
     // Fix unescaped ampersands to prevent LaTeX compilation errors ("Misplaced alignment tab character &")
-    // (This regex finds any '&' that does not have a backslash '\' right before it)
-    latexCode = latexCode.replace(/(?<!\\)&/g, '\\&');
-
-    // Create readable stream
-    // const input = Readable.from([latexCode]);
-
-    // Compile with more detailed error handling
-    const pdf = latex(latexCode, {
-      cmd: "pdflatex",
-      passes: 2,
-      errorLogs: path.join(backendRoot, "latex-compilation-errors.log"),
+    // Escape '&' only on plain-text lines (do not escape on lines ending with '\\' or containing tabular commands)
+    let lines = latexCode.split("\n");
+    lines = lines.map(line => {
+      if (/(?<!\\)&/.test(line)) {
+        const isTabularRow = /\\\\/.test(line) || /\\tabular/.test(line) || /\\extracolsep/.test(line);
+        if (!isTabularRow) {
+          line = line.replace(/\\&/g, '<<AMP>>');
+          line = line.replace(/&/g, '\\&');
+          line = line.replace(/<<AMP>>/g, '\\&');
+        }
+      }
+      return line;
     });
+    latexCode = lines.join("\n");
+    console.log("Ampersand escaping applied");
 
-    // Set headers
-    res.contentType("application/pdf");
-    res.setHeader("Content-Disposition", "inline; filename=resume.pdf");
+    try {
+      fs.writeFileSync(path.join(backendRoot, "debug_latex.tex"), latexCode, "utf8");
+      console.log("Wrote LaTeX code to debug_latex.tex");
+    } catch (writeErr) {
+      console.error("Failed to write debug_latex.tex:", writeErr);
+    }
 
-    // Handle errors BEFORE piping
-    pdf.on("error", (error) => {
-      console.error("=== LaTeX Compilation Error ===");
-      console.error("Error type:", error.name);
-      console.error("Error message:", error.message);
-      console.error("Error stack:", error.stack);
+    // Define unique filenames
+    const jobId = `resume_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    const texPath = path.join(backendRoot, "Temp_PDFs", `${jobId}.tex`);
+    const pdfPath = path.join(backendRoot, "Temp_PDFs", `${jobId}.pdf`);
+    const logPath = path.join(backendRoot, "Temp_PDFs", `${jobId}.log`);
 
-      // Try to read error log file
-      try {
-        const fs = require("fs");
-        const errorLog = fs.readFileSync(
-          path.join(backendRoot, "latex-compilation-errors.log"),
-          "utf8",
-        );
-        console.error("LaTeX Error Log:", errorLog);
-      } catch (logError) {
-        console.error("Could not read error log:", logError.message);
+    // Ensure Temp_PDFs directory exists
+    if (!fs.existsSync(path.join(backendRoot, "Temp_PDFs"))) {
+      fs.mkdirSync(path.join(backendRoot, "Temp_PDFs"), { recursive: true });
+    }
+
+    // Write the TeX file
+    fs.writeFileSync(texPath, latexCode, "utf8");
+
+    // Compile with pdflatex (2 passes)
+    const compileCmd = `pdflatex -interaction=nonstopmode -halt-on-error -jobname=${jobId} -output-directory="${path.join(backendRoot, "Temp_PDFs")}" "${texPath}"`;
+    
+    const { exec } = await import("child_process");
+    
+    // First pass
+    exec(compileCmd, (err, stdout, stderr) => {
+      if (err) {
+        console.error("=== LaTeX First Pass Error ===");
+        handleCompileError(jobId, err, res);
+        return;
       }
 
-      if (!res.headersSent) {
-        return res.status(500).json({
-          message: "LaTeX compilation failed",
-          error: error.message,
-        });
-      }
+      // Second pass
+      exec(compileCmd, (err2, stdout2, stderr2) => {
+        if (err2) {
+          console.error("=== LaTeX Second Pass Error ===");
+          handleCompileError(jobId, err2, res);
+          return;
+        }
+
+        // Success! Send the PDF file
+        if (fs.existsSync(pdfPath)) {
+          console.log("PDF generated successfully:", pdfPath);
+          res.contentType("application/pdf");
+          res.setHeader("Content-Disposition", "inline; filename=resume.pdf");
+          
+          const fileStream = fs.createReadStream(pdfPath);
+          fileStream.pipe(res);
+
+          // Clean up files after stream closes
+          res.on("finish", () => {
+            cleanupFiles([
+              texPath, 
+              pdfPath, 
+              logPath, 
+              path.join(backendRoot, "Temp_PDFs", `${jobId}.aux`), 
+              path.join(backendRoot, "Temp_PDFs", `${jobId}.out`)
+            ]);
+          });
+        } else {
+          res.status(500).json({ message: "PDF file not found after successful compilation" });
+        }
+      });
     });
 
-    // Handle successful finish
-    pdf.on("finish", () => {
-      console.log("PDF generated successfully");
-    });
-
-    // Pipe to response
-    pdf.pipe(res);
   } catch (error) {
     console.error("=== Caught Exception ===");
     console.error("Error:", error);
@@ -701,4 +887,7 @@ export {
   handleAICodeGeneration,
   handleLatexCompilation,
   handleChatting,
+  forgotPassword,
+  resetPassword,
+  handleBuildResume,
 };

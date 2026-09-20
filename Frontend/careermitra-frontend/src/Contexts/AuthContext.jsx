@@ -24,9 +24,6 @@ export const AuthProvider = ({ children }) => {
       if (request.status === httpStatus.CREATED) {
         localStorage.setItem("token", request.data.token);
         localStorage.setItem("username", request.data.username);
-        setTimeout(() => {
-          router("/home");
-        }, 2000);
         return request.data.message || "User registered successfully";
       }
     } catch (error) {
@@ -43,12 +40,9 @@ export const AuthProvider = ({ children }) => {
       });
       if (request.status === httpStatus.OK) {
         localStorage.setItem("token", request.data.token); // add the token and username to the local storage
-        localStorage.setItem("userame", request.data.username);
-        setTimeout(() => {
-          router("/home");
-        }, 2000);
+        localStorage.setItem("username", request.data.username);
+        return request.data.message || "User authenticated successfully";
       }
-      return request.data.message || "User authenticated usccessfully";
     } catch (error) {
       console.log("This error occured in authenticating the user : ", error);
       throw error;

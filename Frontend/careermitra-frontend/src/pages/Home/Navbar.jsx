@@ -1,10 +1,11 @@
 import React from "react";
 import AuthContext from "../../Contexts/AuthContext.jsx";
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import "./Styles/NavbarStyle.css";
 function Navbar() {
   const router = useNavigate();
+  const location = useLocation();
   const [logoutMessage, setLogoutMessage] = useState("");
   const { handleLogout } = useContext(AuthContext);
   const handleLogoutButtonClick = async () => {
@@ -19,11 +20,11 @@ function Navbar() {
       router("/"); // redirect to the landing page
     } else {
       // this part handles login
-      router("/auth"); // redirect to the authentication route
+      router("/auth", { state: { formState: 0 } }); // redirect to the authentication route with login state
     }
   };
   const handleGetStarted = () => {
-    router("/auth"); // redirect to the authentication page when clcked on get started
+    router("/auth", { state: { formState: 1 } }); // redirect to the authentication page with register state
   };
   return (
     <nav className="navbar">
@@ -31,11 +32,11 @@ function Navbar() {
       <div className="navbar-container">
         {/* Logo Section */}
         <div className="navbar-logo">
-          <a href="/">
+          <Link to="/">
             <span className="logo-text">
               Career<span className="logo-highlight">Mitra</span>
             </span>
-          </a>
+          </Link>
           <div className="logo-glow"></div>
         </div>
 
@@ -43,14 +44,34 @@ function Navbar() {
         <div className="navbar-links">
           {/* Display the home page nav link only if the user is logged in */}
           {localStorage.getItem("token") && (
-            <a href="/home" className="nav-item active">
-              Home
-            </a>
+            <>
+              <Link
+                to="/home"
+                className={`nav-item ${location.pathname === "/home" ? "active" : ""}`}
+              >
+                Home
+              </Link>
+              <Link
+                to="/preview"
+                className={`nav-item ${location.pathname === "/preview" ? "active" : ""}`}
+              >
+                Edit Resume
+              </Link>
+              <Link
+                to="/build-resume"
+                className={`nav-item ${location.pathname === "/build-resume" ? "active" : ""}`}
+              >
+                Build Resume
+              </Link>
+            </>
           )}
-          <a href="/features" className="nav-item">
+          <Link
+            to="/features"
+            className={`nav-item ${location.pathname === "/features" ? "active" : ""}`}
+          >
             Features
-          </a>
-          <a href="#resources" className="nav-item">
+          </Link>
+          <a href="/#resources" className="nav-item">
             Resources
           </a>
         </div>

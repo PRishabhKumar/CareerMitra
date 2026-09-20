@@ -1,12 +1,13 @@
 import dotenv from "dotenv"
 import path from "path"
-dotenv.config() 
+dotenv.config({ path: path.resolve(import.meta.dirname, '..', '.env') }) 
 import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
 import userRoutes from "./Routes/UserRoutes.js"
 const app = express();
 const allowedOrigins = [
+    "http://localhost:5173",
     "http://52.66.182.154:5173",            // Local/Old dev IP
     "https://d2hzohjrs1tfem.cloudfront.net", // CloudFront (needs https://)
     "https://careermitra.dev",               // Main Domain

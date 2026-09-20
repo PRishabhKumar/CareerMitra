@@ -1,0 +1,237 @@
+.template-selection-container {
+  min-height: 100vh;
+  padding: 6rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ts-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  width: 100%;
+}
+
+.ts-header h1 {
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.ts-header p {
+  color: #94a3b8;
+  font-size: 1.1rem;
+}
+
+.ts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  width: 100%;
+  margin-bottom: 4rem;
+}
+
+@media (max-width: 900px) {
+  .ts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ts-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.ts-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.1);
+}
+
+.ts-card.active {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 2px #d4af37, 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.ts-card-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 400px; /* Large enough to show layout clearly */
+  overflow: hidden;
+  background: #111;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ts-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top; /* Show top part of resume if long */
+  transition: transform 0.5s ease;
+}
+
+.ts-card:hover .ts-card-image {
+  transform: scale(1.05);
+}
+
+.ts-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ts-card.active .ts-card-overlay,
+.ts-card:hover .ts-card-overlay {
+  opacity: 1;
+}
+
+.ts-select-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.ts-card.active .ts-select-circle {
+  background: #d4af37;
+  border-color: #d4af37;
+  color: #000;
+}
+
+.ts-card-content {
+  padding: 1.5rem;
+}
+
+.ts-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.ts-card-header h3 {
+  font-size: 1.25rem;
+  color: #fff;
+  margin: 0;
+}
+
+.ts-badge {
+  background: rgba(212, 175, 55, 0.15);
+  color: #d4af37;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ts-description {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  height: 4.8em; /* Ensure uniform height for 3 lines of text */
+}
+
+.ts-audience {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ts-audience strong {
+  color: #fff;
+}
+
+.ts-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 50;
+}
+
+.ts-submit-btn {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem 3rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.ts-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+.ts-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.ts-error-state {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.ts-error-state h2 {
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.ts-error-state p {
+  color: #94a3b8;
+  margin-bottom: 2rem;
+}
+
+.ts-btn-primary {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+  color: #000;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  cursor: pointer;
+}

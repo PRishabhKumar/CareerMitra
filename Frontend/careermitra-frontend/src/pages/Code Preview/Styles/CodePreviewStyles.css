@@ -66,6 +66,87 @@
   backdrop-filter: blur(10px);
 }
 
+.header-left-group {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Beautiful Animated Back Button */
+.preview-back-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-secondary);
+  padding: 0.55rem 1.25rem;
+  border-radius: 10px;
+  font-family: "Outfit", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.preview-back-button .back-arrow-icon {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  stroke: var(--text-secondary);
+}
+
+.preview-back-button span {
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.preview-back-button .back-btn-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 175, 55, 0.25),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: 0.6s ease;
+  pointer-events: none;
+}
+
+.preview-back-button:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.25), inset 0 0 10px rgba(212, 175, 55, 0.05);
+}
+
+.preview-back-button:hover .back-arrow-icon {
+  transform: translateX(-4px);
+  stroke: var(--accent-primary);
+}
+
+.preview-back-button:hover span {
+  color: #fff;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+.preview-back-button:hover .back-btn-shine {
+  left: 200%;
+}
+
+.preview-back-button:active {
+  transform: translateY(0);
+}
+
 .header-title-group {
   display: flex;
   align-items: center;

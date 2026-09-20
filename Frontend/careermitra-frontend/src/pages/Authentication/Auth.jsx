@@ -1,22 +1,30 @@
 import React from 'react'
 import "./Styles/AuthStyle.css";
-import { useState, useContext } from "react";
-import { useRef } from "react";
+import { useState, useContext, useEffect } from "react";
 import AuthContext from "../../Contexts/AuthContext.jsx";
 import httpStatus from "http-status";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Auth() {
   const router = useNavigate();
-  const containerRef = useRef(null);
+  const location = useLocation();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [emailID, setEmailID] = useState("");
-  const [formState, setFormState] = useState(1);
+  const [formState, setFormState] = useState(
+    location.state?.formState !== undefined ? location.state.formState : 0
+  );
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (location.state?.formState !== undefined) {
+      setFormState(location.state.formState);
+    }
+  }, [location.state]);
 
   const handleSubmit = async (e) => {
     await handleAuthentication();
@@ -29,6 +37,7 @@ function Auth() {
   };
   const { handleRegister, handleLogin } = useContext(AuthContext);
 
+
   const handleAuthentication = async () => {
     try {
       // login
@@ -36,8 +45,7 @@ function Auth() {
         let result = await handleLogin(username, password);
         setMessage("User authenticated successfully..");
         setError("");
-        setUsername(username);
-        setPassword(password);
+        router("/home"); // navigate immediately — no delayed timer that can fire on other pages
       }
       //register
       else {
@@ -49,13 +57,7 @@ function Auth() {
         );
         setMessage("User registered successfully...");
         setError("");
-        setUsername(username);
-        setPassword(password);
-        setPhoneNumber(phoneNumber);
-        setEmailID(emailID);
-        setTimeout(() => {
-          router("/home"); // redirect to the home page after 2 seconds
-        }, 2000);
+        router("/home"); // navigate immediately — no delayed timer that can fire on other pages
       }
     } catch (err) {
       if (
@@ -93,7 +95,7 @@ function Auth() {
       </div>
 
       {/* Main Content */}
-      <div className="auth-content" ref={containerRef}>
+      <div className="auth-content">
         {/* Left Side - Branding */}
         <div className="auth-branding">
           <div className="brand-content">
@@ -304,6 +306,11 @@ function Auth() {
               </div>
 
               {/* Submit Button */}
+              {formState === 0 && (
+                <div className="forgot-password-link" style={{textAlign: "right", marginTop: "-10px", marginBottom: "15px"}}>
+                  <a href="/forgot-password" style={{color: "#d4af37", fontSize: "0.9rem", textDecoration: "none"}}>Forgot Password?</a>
+                </div>
+              )}
               <button
                 type="button"
                 onClick={handleSubmit}

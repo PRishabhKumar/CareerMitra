@@ -13,6 +13,11 @@ import CodePreview from "./pages/Code Preview/CodePreview.jsx";
 import ProtectRoute from "./utils/ProtectRoute.jsx";
 import NotFound from "./pages/Not Found Page/NotFound.jsx";
 import FeaturesPage from "./pages/Features/FeaturesPage.jsx";
+import BuildResume from "./pages/BuildResume/BuildResume.jsx";
+import TemplateSelection from "./pages/TemplateSelection/TemplateSelection.jsx";
+import ForgotPassword from "./pages/Authentication/ForgotPassword.jsx";
+import ResetPassword from "./pages/Authentication/ResetPassword.jsx";
+
 function App() {
   return (
     <>
@@ -55,6 +60,22 @@ function App() {
               }
             />
             <Route
+              path="/build-resume"
+              element={
+                <ProtectRoute>
+                  <BuildResume />
+                </ProtectRoute>
+              }
+            />
+            <Route
+              path="/select-template"
+              element={
+                <ProtectRoute>
+                  <TemplateSelection />
+                </ProtectRoute>
+              }
+            />
+            <Route
               path="/preview"
               element={
                 <ProtectRoute>
@@ -66,6 +87,18 @@ function App() {
               path="/features"
               element={
                 <FeaturesPage />
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                <ForgotPassword />
+              }
+            />
+            <Route
+              path="/reset-password/:token"
+              element={
+                <ResetPassword />
               }
             />
             <Route
