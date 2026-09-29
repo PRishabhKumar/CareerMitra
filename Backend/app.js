@@ -8,12 +8,12 @@ import userRoutes from "./Routes/UserRoutes.js"
 const app = express();
 const allowedOrigins = [
     "http://localhost:5173",
-    "http://52.66.182.154:5173",            // Local/Old dev IP
-    "https://d2hzohjrs1tfem.cloudfront.net", // CloudFront (needs https://)
-    "https://careermitra.dev",               // Main Domain
-    "https://www.careermitra.dev"            // WWW Domain
+    "http://52.66.182.154:5173",
+    "https://d2hzohjrs1tfem.cloudfront.net",
+    "https://career-mitra-eight.vercel.app",  // Vercel frontend
+    "https://careermitra.dev",
+    "https://www.careermitra.dev"
 ];
-
 app.use(cors({
     origin: function (origin, callback) {
         // Allow requests with no origin (like mobile apps or curl requests)
