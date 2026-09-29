@@ -42,7 +42,7 @@ const startServer = async ()=>{
         const connection = await mongoose.connect(process.env.DB_CONNECTION_STRING)
         console.log("Connected successfully with the database cluster");
         // making the server to listen for requests
-        app.listen(app.get("port"), ()=>{
+        app.listen(app.get("port"), "0.0.0.0", ()=>{
             console.log("Server is now active and is listening for requests on port " + app.get("port"))
         })
     }

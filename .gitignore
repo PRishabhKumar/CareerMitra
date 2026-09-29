@@ -51,4 +51,6 @@ instructions.txt
 ATS_Scoring_Approach.md
 Planning docs/
 keep_screen_on.py
-Frontend/CareerMitra Frontend/src/images/
+Frontend/CareerMitra Frontend/src/images/
+generated resumes/
+generate_samples.js
